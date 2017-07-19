@@ -1,16 +1,16 @@
-apply plugin: 'maven'
-uploadArchives{
-    repositories.mavenDeployer{
-        // 本地仓库路径
-        repository(url:"file://C://Repositys/.m2/repository/")
-        // 唯一标识
-        pom.groupId = "com.rtmap.game"
-        // 项目名称
-        pom.artifactId = "ArGame"
-        // 版本号
-        pom.version = "1.0.1"
-    }
-}
+//apply plugin: 'maven'
+//uploadArchives{
+//    repositories.mavenDeployer{
+//        // 本地仓库路径
+//        repository(url:"file://C://Repositys/.m2/repository/")
+//        // 唯一标识
+//        pom.groupId = "com.rtmap.game"
+//        // 项目名称
+//        pom.artifactId = "ArGame"
+//        // 版本号
+//        pom.version = "1.0.1"
+//    }
+//}
 android {
     buildToolsVersion "25.0.0"
     compileSdkVersion 25

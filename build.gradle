@@ -23,7 +23,7 @@ allprojects {
     }
     repositories {
         jcenter()
-        maven { url 'C://Repositys/.m2/repository' }
+//        maven { url 'C://Repositys/.m2/repository' }
     }
 }
 project(":android") {
