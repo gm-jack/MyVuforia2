@@ -5,8 +5,8 @@ package com.rtmap.game.util;
  */
 public class Contacts {
     public static final String HOST = "https://easygo5.rtmap.com/rtmap_easygo_v5/happyGo/vrGameDeduct?token=";
-    public static String LIST_NET = "http://182.92.31.114/rest/act/card/18397/";
-    public static String WIN_NET = "http://182.92.31.114/rest/act/18397/";
+    public static String LIST_NET = "http://182.92.31.114/rest/act/card/18796/";
+    public static String WIN_NET = "http://182.92.31.114/rest/act/18796/";
     public static final String ANIM_IS_ANIMATION = "anim_is_animation";
     public static final String PHONE = "ar_phone";
     public static final String TOKEN = "ar_token";

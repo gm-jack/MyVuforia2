@@ -1,9 +1,0 @@
-<resources>
-
-    <!-- Base application theme. -->
-
-    <style name="SampleAppsTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-</resources>

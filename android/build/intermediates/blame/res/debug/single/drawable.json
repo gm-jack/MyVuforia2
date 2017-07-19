@@ -1,19 +1,19 @@
 [
     {
-        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_voice_search_api_material.xml",
-        "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\drawable\\abc_ic_voice_search_api_material.xml"
-    },
-    {
         "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_colored_material.xml",
         "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\drawable\\abc_btn_colored_material.xml"
     },
     {
-        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_ab_back_material.xml",
-        "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\drawable\\abc_ic_ab_back_material.xml"
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_voice_search_api_material.xml",
+        "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\drawable\\abc_ic_voice_search_api_material.xml"
     },
     {
         "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_text_cursor_material.xml",
         "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\drawable\\abc_text_cursor_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_ab_back_material.xml",
+        "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\drawable\\abc_ic_ab_back_material.xml"
     },
     {
         "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_tab_indicator_material.xml",

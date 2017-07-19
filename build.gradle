@@ -35,9 +35,9 @@ project(":android") {
     configurations { natives }
 
     dependencies {
-        compile fileTree(include: ['*.jar'], dir: 'libs')
+
 //    compile(name: 'vuforia', ext: 'aar')
-        compile project(':app')
+        compile 'com.github.gm-jack:MyAarApplication:66a3c2488b'
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 //        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
