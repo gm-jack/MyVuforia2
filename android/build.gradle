@@ -33,9 +33,9 @@ android {
         versionCode 30
         versionName "3.0"
     }
-//    lintOptions {
-//        abortOnError false
-//    }
+    lintOptions {
+        abortOnError false
+    }
 
     repositories {
         flatDir {
@@ -157,7 +157,5 @@ android {
 //    }
 //}
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile(name: 'vuforia', ext: 'aar')
-    compile project(':app')
+
 }
