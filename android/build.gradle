@@ -157,7 +157,7 @@ android {
 //    }
 //}
 dependencies {
-//    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 //    compile(name: 'vuforia', ext: 'aar')
-//    compile project(':app')
+    compile project(':app')
 }

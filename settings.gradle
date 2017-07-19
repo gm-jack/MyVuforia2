@@ -1,1 +1,1 @@
-include ':app', ':android'
+include ':app', ':android','myvuforia2'

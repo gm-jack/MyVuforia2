@@ -63,7 +63,6 @@ project(":android") {
         compile 'com.google.code.gson:gson:2.2.4'
         compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
         compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.1"
-        compile 'com.rtmap.vuforia:MyVuforia:1.0.0'
 
     }
 }
