@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\ic_launcher.png",
+        "source": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\res\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\scan.png",
+        "source": "C:\\Users\\yxy\\.android\\build-cache\\4c0f89eadb965571e96581b3bbeba6338a4a3d54\\output\\res\\mipmap-xxhdpi-v4\\scan.png"
+    },
+    {
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\back.png",
+        "source": "C:\\Users\\yxy\\.android\\build-cache\\4c0f89eadb965571e96581b3bbeba6338a4a3d54\\output\\res\\mipmap-xxhdpi-v4\\back.png"
+    }
+]

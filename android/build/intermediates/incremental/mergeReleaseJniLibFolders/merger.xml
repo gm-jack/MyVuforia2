@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\libs"><file name="armeabi-v7a/libgdx-box2d.so" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\libs\armeabi-v7a\libgdx-box2d.so"/><file name="armeabi-v7a/libgdx.so" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\libs\armeabi-v7a\libgdx.so"/></source></dataSet><dataSet config="release"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\src\release\jniLibs"/></dataSet></merger>

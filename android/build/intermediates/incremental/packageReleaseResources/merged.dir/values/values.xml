@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent_background_A2A2A2">#44A2A2A2</color>
+    <declare-styleable name="RoundImageView"><attr format="dimension" name="borderRadius"/><attr format="enum" name="type">
+            <enum name="circle" value="0"/>
+            <enum name="round" value="1"/>
+            <enum name="round_top" value="2"/>
+            <enum name="round_bottom" value="3"/>
+        </attr></declare-styleable>
+    <string name="app_name">ArProject</string>
+    <style name="GdxTheme" parent="android:Theme">
+		<item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>

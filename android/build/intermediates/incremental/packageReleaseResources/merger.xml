@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main$Generated" generated="true"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\rs\release"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\src\release\res"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res"><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-hdpi\ic_launcher.png" qualifiers="hdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-mdpi\ic_launcher.png" qualifiers="mdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-xhdpi\ic_launcher.png" qualifiers="xhdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-xxhdpi\ic_launcher.png" qualifiers="xxhdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-xxxhdpi\ic_launcher.png" qualifiers="xxxhdpi-v4" type="mipmap"/><file path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\values\attr.xml" qualifiers=""><declare-styleable name="RoundImageView">
+        <attr format="dimension" name="borderRadius"/>
+        <attr format="enum" name="type">
+            <enum name="circle" value="0"/>
+            <enum name="round" value="1"/>
+            <enum name="round_top" value="2"/>
+            <enum name="round_bottom" value="3"/>
+        </attr>
+    </declare-styleable></file><file path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\values\colors.xml" qualifiers=""><color name="transparent_background_A2A2A2">#44A2A2A2</color></file><file path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\values\strings.xml" qualifiers=""><string name="app_name">ArProject</string></file><file path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\values\styles.xml" qualifiers=""><style name="GdxTheme" parent="android:Theme">
+		<item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+    </style></file></source><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\rs\release"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\resValues\release"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="RoundImageView"><attr format="dimension" name="borderRadius"/><attr format="enum" name="type">
+            <enum name="circle" value="0"/>
+            <enum name="round" value="1"/>
+            <enum name="round_top" value="2"/>
+            <enum name="round_bottom" value="3"/>
+        </attr></declare-styleable></configuration></mergedItems></merger>
