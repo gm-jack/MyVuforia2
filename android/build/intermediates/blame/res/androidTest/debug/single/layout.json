@@ -1,11 +1,11 @@
 [
     {
-        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_expanded_menu_layout.xml",
-        "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\layout\\abc_expanded_menu_layout.xml"
-    },
-    {
         "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_action_mode_bar.xml",
         "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\layout\\abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_expanded_menu_layout.xml",
+        "source": "C:\\Users\\yxy\\.android\\build-cache\\f1f646e915ea465425055193e1f4a0200420bb5a\\output\\res\\layout\\abc_expanded_menu_layout.xml"
     },
     {
         "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\abc_select_dialog_material.xml",
