@@ -121,7 +121,7 @@ public class LoadingActor extends Actor {
                             @Override
                             public void run() {
                                 if (mGame != null)
-                                    mGame.showAimScreen(true);
+                                    mGame.showAimScreen(true, false);
                             }
                         });
                     }
@@ -182,7 +182,7 @@ public class LoadingActor extends Actor {
     }
 
     public void initResources() {
-        texReArray = new ArrayList<>();
+        texReArray = new ArrayList<TextureRegion>();
         texReArray.add(new TextureRegion((Texture) asset.get("main_bg.png")));
         texReArray.add(new TextureRegion((Texture) asset.get("loading_center.png")));
         texReArray.add(new TextureRegion((Texture) asset.get("loading_in.png")));

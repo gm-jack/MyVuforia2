@@ -1,6 +1,6 @@
 package com.rtmap.game.stage;
 
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -13,5 +13,9 @@ public class CatchStage extends GameStage {
 
     public CatchStage(Viewport viewport) {
         super(viewport);
+    }
+
+    public CatchStage(Viewport viewport, Batch batch) {
+        super(viewport, batch);
     }
 }

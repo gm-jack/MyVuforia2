@@ -38,7 +38,7 @@ public class CoverActor extends Actor {
     private void initResources() {
 
         normal = new TextureRegion((Texture) assetManager.get("catch_cover.png"));
-        tip = new TextureRegion((Texture) assetManager.get("find_tip.png"));
+        tip = new TextureRegion((Texture) assetManager.get("find_tip1.png"));
         catchs = new TextureRegion((Texture) assetManager.get("catch_catch.png"));
 
         float scale = (float) width / (float) normal.getRegionWidth();

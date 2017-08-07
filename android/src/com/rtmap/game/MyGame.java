@@ -48,8 +48,8 @@ public class MyGame extends Game {
         this.androidLauncher = androidLauncher;
         this.androidDeviceCameraController = androidDeviceCameraController;
         this.asset = asset;
-        screenList = new ArrayList<>();
-        mToggle = (boolean) SPUtil.get("ar_toggle", true);
+        screenList = new ArrayList<Screen>();
+        mToggle = (Boolean) SPUtil.get("ar_toggle", true);
     }
 
     @Override
@@ -67,15 +67,15 @@ public class MyGame extends Game {
         Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (mode == normal_Mode) {
-            if (androidDeviceCameraController != null) {
-                Gdx.app.error("gdx", "normal_Mode");
-                androidDeviceCameraController.prepareCameraAsync(cameraShow);
-                mode = prepare_Mode;
-            }
-        }
-        if (!(getScreen() instanceof MainScreen || getScreen() instanceof BeedScreen)) {
 
+        if (!(getScreen() instanceof MainScreen || getScreen() instanceof BeedScreen)) {
+            if (mode == normal_Mode) {
+                if (androidDeviceCameraController != null) {
+                    Gdx.app.error("gdx", "normal_Mode");
+                    androidDeviceCameraController.prepareCameraAsync(cameraShow);
+                    mode = prepare_Mode;
+                }
+            }
             if (mode == prepare_Mode) {
                 if (androidDeviceCameraController != null)
                     if (androidDeviceCameraController.isReady()) {
@@ -91,21 +91,20 @@ public class MyGame extends Game {
     @Override
     public void pause() {
         super.pause();
-        stopCamera(cameraShow);
     }
 
     public void stopCamera(boolean cameraShow) {
         this.cameraShow = cameraShow;
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stoPreviewAsync();
-            mode = prepare_Mode;
+            mode = preview_Mode;
         }
     }
 
     public void stopCamera() {
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();
-            mode = normal_Mode;
+            mode = preview_Mode;
         }
     }
 
@@ -126,30 +125,39 @@ public class MyGame extends Game {
     }
 
     public void showMainScreen() {
-        mode = normal_Mode;
+        if (mode != normal_Mode)
+            mode = normal_Mode;
         mainScreen = new MainScreen(this, androidLauncher, mViewport);
         setScreen(mainScreen);
         stopCamera();
     }
 
     public void showOldScreen() {
+        if (mode != normal_Mode)
+            mode = normal_Mode;
         if (oldScreen == null)
             return;
         setScreen(oldScreen);
     }
 
     public void showBeedScreen(Screen oldScreen) {
+        mode = preview_Mode;
         this.oldScreen = oldScreen;
         setScreen(new BeedScreen(this, androidLauncher, mViewport));
     }
 
     public void showLoadingScreen() {
+        if (mode != normal_Mode)
+            mode = normal_Mode;
         loadingScreen = new LoadingScreen(this, mViewport, androidDeviceCameraController);
         setScreen(loadingScreen);
     }
 
 
-    public void showAimScreen(boolean fail) {
+    public void showAimScreen(boolean fail, boolean isCatch) {
+        if (isCatch && mode != normal_Mode) {
+            mode = normal_Mode;
+        }
         aimScreen = new AimScreen(this, androidLauncher, mViewport);
         setScreen(aimScreen);
         aimScreen.setIsFail(fail);

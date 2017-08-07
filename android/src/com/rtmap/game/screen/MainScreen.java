@@ -1,9 +1,6 @@
 package com.rtmap.game.screen;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
@@ -67,11 +64,11 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
 
         mainStage.addActor(group);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (androidLauncher.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || androidLauncher.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || androidLauncher.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                androidLauncher.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (androidLauncher.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || androidLauncher.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || androidLauncher.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                androidLauncher.requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
+//            }
+//        }
     }
 
     public void initResources() {
@@ -101,6 +98,7 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
                         isFirst = false;
                         androidLauncher.start();
                     }
+
 
 //                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //                        if (androidLauncher.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || androidLauncher.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || androidLauncher.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -202,6 +200,8 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
+                        if (group != null && startActor != null)
+                            group.removeActor(startActor);
                         if (mGame != null) {
                             mGame.showLoadingScreen();
                         }

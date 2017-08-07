@@ -26,6 +26,10 @@ public class AgainActor extends Actor {
     private float normalWidth;
     private float normalHeight;
     private boolean isFirst = true;
+    private TextureRegion again;
+    private float againHeight;
+    private float againWidth;
+    private boolean isFirstCatch;
 
     public AgainActor(AssetManager assetManager) {
         super();
@@ -33,15 +37,18 @@ public class AgainActor extends Actor {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
 
-        firstCatch = (boolean) SPUtil.get(Contacts.FIRST, true);
+        firstCatch = (Boolean) SPUtil.get(Contacts.FIRST, true);
     }
 
     private void initResources() {
         mRegion = new TextureRegion((Texture) assetManager.get("catch_bg.png"));
         normal = new TextureRegion((Texture) assetManager.get("open_again.png"));
+        again = new TextureRegion((Texture) assetManager.get("again_again.png"));
         float scale = (float) width / mRegion.getRegionWidth();
         normalWidth = normal.getRegionWidth() * scale;
-        normalHeight = normal.getRegionHeight() * scale;
+        againHeight = normal.getRegionHeight() * scale;
+        againWidth = again.getRegionWidth() * scale;
+        normalHeight = again.getRegionHeight() * scale;
         setPosition(width / 2 - normalWidth / 2, height * 0.33f);
         setSize(normalWidth, normalHeight);
     }
@@ -69,6 +76,10 @@ public class AgainActor extends Actor {
         addListener(listener);
     }
 
+    public void setFirstCatch(boolean firstCatch) {
+        isFirstCatch = firstCatch;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
@@ -78,10 +89,14 @@ public class AgainActor extends Actor {
         if (assetManager.update()) {
             initResources();
         }
-        if (isShow)
-            if (normal != null)
+        if (isShow) {
+            if (normal != null && isFirstCatch)
                 batch.draw(normal, width / 2 - normalWidth / 2, height * 0.33f, normalWidth, normalHeight);
+            else if (again != null)
+                batch.draw(again, width / 2 - againWidth / 2, height * 0.33f, againWidth, againHeight);
+        }
     }
+
 
     @Override
     public void act(float delta) {

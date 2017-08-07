@@ -1,16 +1,15 @@
 package com.rtmap.game;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -18,11 +17,11 @@ import com.rtmap.game.camera.AndroidDeviceCameraController;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.SPUtil;
 import com.rtmap.gm.myvuforia.ImageTargets.ImageTargets;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.SoftReference;
 
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AndroidLauncher extends AndroidApplication {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     protected int origWidth;
@@ -70,8 +69,9 @@ public class AndroidLauncher extends AndroidApplication {
         initialize(new MyGame(this, androidDeviceCameraController, asset), config);
 
         //设置日志等级
-//        Gdx.app.setLogLevel(LOG_NONE);
-
+        Gdx.app.setLogLevel(LOG_NONE);
+        MobclickAgent.setCatchUncaughtExceptions(true);
+        MobclickAgent.setDebugMode( true );
         if (graphics.getView() instanceof SurfaceView) {
             SurfaceView glView = (SurfaceView) graphics.getView();
             glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -106,6 +106,7 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override
@@ -113,6 +114,7 @@ public class AndroidLauncher extends AndroidApplication {
 //        if (androidDeviceCameraController != null) {
 //            androidDeviceCameraController.stopPreviewAsync();
 //        }
+        MobclickAgent.onPause(this);
         super.onPause();
 
     }
@@ -145,6 +147,6 @@ public class AndroidLauncher extends AndroidApplication {
     }
 
     public void start() {
-        startActivityForResult(new Intent(this, ImageTargets.class), 101);
+        startActivityForResult(new Intent(AndroidLauncher.this, ImageTargets.class), 101);
     }
 }

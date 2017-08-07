@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main$Generated" generated="true"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\rs\release"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\src\release\res"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res"><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-hdpi\ic_launcher.png" qualifiers="hdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-mdpi\ic_launcher.png" qualifiers="mdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-xhdpi\ic_launcher.png" qualifiers="xhdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-xxhdpi\ic_launcher.png" qualifiers="xxhdpi-v4" type="mipmap"/><file name="ic_launcher" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\mipmap-xxxhdpi\ic_launcher.png" qualifiers="xxxhdpi-v4" type="mipmap"/><file path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\values\attr.xml" qualifiers=""><declare-styleable name="RoundImageView">
+<merger version="3"><dataSet config="main$Generated" generated="true"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\rs\release"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\src\release\res"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res"><file name="shape" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\drawable\shape.xml" qualifiers="" type="drawable"/><file name="dialog_rule" path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\layout\dialog_rule.xml" qualifiers="" type="layout"/><file path="C:\Users\yxy\Desktop\Project\MyVuforia\android\res\values\attr.xml" qualifiers=""><declare-styleable name="RoundImageView">
         <attr format="dimension" name="borderRadius"/>
         <attr format="enum" name="type">
             <enum name="circle" value="0"/>
@@ -14,6 +14,23 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowFullscreen">true</item>
+    </style><style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@android:color/transparent</item>
+        
+        <item name="android:windowIsFloating">true</item>
+        
+        <item name="android:windowIsTranslucent">true</item>
+        
+        <item name="android:windowNoTitle">true</item>
+        
+        <item name="android:background">@android:color/transparent</item>
+        
+        <item name="android:windowBackground">@android:color/transparent</item>
+        
+        <item name="android:backgroundDimEnabled">true</item>
+        
+        <item name="android:windowFullscreen">true</item>
+        
     </style></file></source><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\rs\release"/><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\build\generated\res\resValues\release"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="C:\Users\yxy\Desktop\Project\MyVuforia\android\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="RoundImageView"><attr format="dimension" name="borderRadius"/><attr format="enum" name="type">
             <enum name="circle" value="0"/>
             <enum name="round" value="1"/>

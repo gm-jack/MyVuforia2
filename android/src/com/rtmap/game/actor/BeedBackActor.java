@@ -18,7 +18,7 @@ public class BeedBackActor extends Actor {
     private int width;
     private int height;
     private AssetManager assetManager;
-    private List<TextureRegion> beedList = new ArrayList<>();
+    private List<TextureRegion> beedList = new ArrayList<TextureRegion>();
     private float regionHeight;
     private float scale = 1;
     private float realWidth;

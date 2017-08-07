@@ -165,7 +165,7 @@ public class NativeFont extends BitmapFont {
     private void create(String characters, boolean haveMinPageSize) {
         char c;
         characters = characters.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
-        Array<String> cs = new Array<>();
+        Array<String> cs = new Array<String>();
         for (char c2 : characters.toCharArray()) {
             if (this.charSet.add((String.valueOf(c2)))) {
                 cs.add((String.valueOf(c2)));

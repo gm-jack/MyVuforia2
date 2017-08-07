@@ -1,12 +1,11 @@
 package com.rtmap.game.screen;
 
-import android.text.SpannableString;
+import android.view.View;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.google.gson.Gson;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
@@ -16,25 +15,19 @@ import com.rtmap.game.interfaces.AimListener;
 import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
-import com.rtmap.game.model.BaseBean;
+import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.util.Contacts;
+import com.rtmap.game.util.CustomDialog;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
 
 import java.util.Timer;
-import java.util.TimerTask;
-
-import de.tomgrill.gdxdialogs.core.GDXDialogs;
-import de.tomgrill.gdxdialogs.core.GDXDialogsSystem;
-import de.tomgrill.gdxdialogs.core.dialogs.GDXButtonDialog;
-import de.tomgrill.gdxdialogs.core.listener.ButtonClickListener;
 
 /**
  * Created by yxy on 2017/2/20.
  */
 public class AimScreen extends MyScreen {
-    private GDXDialogs dManager;
     private ScreenViewport mViewPort;
     private AndroidLauncher androidLauncher;
     private MyGame mGame;
@@ -49,9 +42,6 @@ public class AimScreen extends MyScreen {
     private boolean isFirst = true;
     private boolean isAim = false;
     private boolean isAnimation = true;
-    private int nums = 0;
-    private String mToken;
-    private String mUserId;
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
@@ -76,7 +66,6 @@ public class AimScreen extends MyScreen {
         group2.addActor(beedActor);
 
         aimStage.addActor(group2);
-        dManager = GDXDialogsSystem.install();
     }
 
     @Override
@@ -135,6 +124,33 @@ public class AimScreen extends MyScreen {
                     setIsAnim(true);
                 }
             });
+            aimActor.setFindListener(new CatchListener() {
+                @Override
+                public void onFirst() {
+
+                }
+
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onFail() {
+
+                }
+
+                @Override
+                public void onNumberFail(int number) {
+
+                }
+
+                @Override
+                public void onTouched(int num) {
+                    aimActor.setIsTip(false);
+                    setCanPlay(true);
+                }
+            });
             setAnimationListener(new AnimationListener() {
                 @Override
                 public void startAnim(boolean isDistance) {
@@ -142,19 +158,17 @@ public class AimScreen extends MyScreen {
                         if (isDistance) {
 //                            aimActor.setIsStartAnimation(true);
                         } else {
-                            isAim = (boolean) SPUtil.get("first_find", true);
+                            isAim = (Boolean) SPUtil.get("first_find", true);
                             if (isAim) {
                                 aimActor.setIsTip(true);
+                                setCanPlay(false);
                                 SPUtil.put("first_find", false);
-                                if (timer == null)
-                                    timer = new Timer();
-                                timer.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        aimActor.setIsTip(false);
-                                    }
-                                }, 1000);
                             }
+//                            isAim = (Boolean) SPUtil.get(Contacts.FIRST, true);
+//                            if (isAim) {
+//                                aimActor.setIsTip(true);
+//                                setCanPlay(false);
+//                            }
 //                            aimActor.setIsStartAnimation(false);
                         }
                     }
@@ -218,7 +232,9 @@ public class AimScreen extends MyScreen {
 //        } else {
 //            setCanPlay(true);
 //        }
-
+        Boolean o = (Boolean) SPUtil.get(Contacts.FIRST, true);
+        if (!o)
+            getActivityOn();
 
         setIsLineShow(true);
         setStopCamera(false);
@@ -229,119 +245,60 @@ public class AimScreen extends MyScreen {
         super.resize(width, height);
     }
 
-    private void showANewDoubleButtonDialog() {
-        GDXButtonDialog bDialog = dManager.newDialog(GDXButtonDialog.class);
-
-        bDialog.setTitle("提示");
-        int point = (int) SPUtil.get(Contacts.E_POINT, 0);
-        SpannableString string = new SpannableString("优惠券已抢光，下次再来！");
-//        string.setSpan(new ForegroundColorSpan(Color.parseColor("#82E0F2")), "您的今日挑战次数已达到5次，如果继续挑战需扣减3E点/次。\n(当前E点余额：".length(), new String("您的今日挑战次数已达到5次，如果继续挑战需扣减3E点/次。\n(当前E点余额：" + point).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        bDialog.setMessage(string);
-
-        bDialog.setClickListener(new ButtonClickListener() {
-
+    private void getActivityOn() {
+        NetUtil.getInstance().get(Contacts.ACTIVY_ON, new Net.HttpResponseListener() {
+            //NetUtil.getInstance().get(Contacts.HOST + "1ff0788f5f9e965c51fd77f89666e214" + "&user_id=" + "" + "&type=10005", new Net.HttpResponseListener() {
             @Override
-            public void click(int button) {
-                if (button == 0) {
-                    //继续挑战
-                    mToken = (String) SPUtil.get(Contacts.TOKEN, "");
-                    mUserId = (String) SPUtil.get(Contacts.USERID, "");
-
-                    NetUtil.getInstance().get(Contacts.HOST + mToken + "&user_id=" + mUserId + "&type=10005", new Net.HttpResponseListener() {
-                        //NetUtil.getInstance().get(Contacts.HOST + "1ff0788f5f9e965c51fd77f89666e214" + "&user_id=" + "" + "&type=10005", new Net.HttpResponseListener() {
-                        @Override
-                        public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                            String string = httpResponse.getResultAsString();
-                            Gdx.app.error("dialog", string);
-                            BaseBean bean = new Gson().fromJson(string, BaseBean.class);
-                            if (bean != null) {
-                                Gdx.app.error("dialog", "debug   " + ("0".equals(bean.getCode())));
-                                if ("0".equals(bean.getCode())) {
-                                    setCanPlay(true);
-                                    SPUtil.put(Contacts.E_POINT, bean.getData().getOtherPoint());
-                                } else {
-                                    setCanPlay(false);
-                                    showANewSingleButtonDialog();
-                                }
-                            } else {
-                                setCanPlay(false);
-                                showANewSingleButtonDialog();
-                            }
-                        }
-
-                        @Override
-                        public void failed(Throwable t) {
-                            Gdx.app.postRunnable(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mGame != null)
-                                        mGame.showMainScreen();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void cancelled() {
-                            Gdx.app.postRunnable(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mGame != null)
-                                        mGame.showMainScreen();
-                                }
-                            });
-                        }
-                    });
-
-                } else {
-                    //先不玩了
-                    Gdx.app.postRunnable(new Runnable() {
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String string = httpResponse.getResultAsString();
+                Gdx.app.error("dialog", string);
+                if (!"1".equals(string)) {
+                    androidLauncher.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (mGame != null)
-                                mGame.showMainScreen();
+                            SPUtil.put(Contacts.ACTIVE, false);
+                            setCanPlay(false);
+                            showANewSingleButtonDialog();
                         }
                     });
+                } else {
+                    SPUtil.put(Contacts.ACTIVE, true);
+                    setCanPlay(true);
                 }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                SPUtil.put(Contacts.ACTIVE, false);
+                setCanPlay(false);
+                showANewSingleButtonDialog();
+            }
+
+            @Override
+            public void cancelled() {
 
             }
         });
+    }
 
-        bDialog.addButton("继续挑战");
-        bDialog.addButton("先不玩了");
-
-        bDialog.build().show();
-
+    private void showANewSingleButtonDialog() {
+        final CustomDialog dialog = new CustomDialog(androidLauncher);
+        dialog.setContentVisiable(false);
+        dialog.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCanPlay(true);
+                Gdx.app.error("app", "setOnClickListener   " + dialog.isShowing());
+            }
+        });
+        dialog.setTitleText("优惠券已抢光，下次再来吧!");
+        dialog.setButtonText("知道了");
+        dialog.show();
     }
 
     @Override
     public void setCanPlay(boolean canPlay) {
         super.setCanPlay(canPlay);
-    }
-
-    private void showANewSingleButtonDialog() {
-        final GDXButtonDialog bDialog = dManager.newDialog(GDXButtonDialog.class);
-
-        bDialog.setMessage("您的E点不足，明天再来吧。另外，签到也能赚E点哦!");
-
-        bDialog.setClickListener(new ButtonClickListener() {
-
-            @Override
-            public void click(int button) {
-
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mGame != null)
-                            mGame.showMainScreen();
-                    }
-                });
-            }
-        });
-
-        bDialog.addButton("确定");
-
-        bDialog.build().show();
-
     }
 
     @Override

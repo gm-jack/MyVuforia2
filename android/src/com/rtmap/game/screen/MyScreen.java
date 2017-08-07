@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Align;
@@ -61,7 +61,7 @@ public abstract class MyScreen implements Screen {
     private int width;
     private int height;
     private SpriteBatch spriteBatch;
-    private List<TextureRegion> texture = new ArrayList<>();
+    private List<TextureRegion> texture = new ArrayList<TextureRegion>();
     private double angle;
     private double radius;
     private float nowAngle;
@@ -82,13 +82,9 @@ public abstract class MyScreen implements Screen {
     private AnimationListener animationListener;
     //保存箭头是否显示
     private boolean oldIsLineShow = true;
-    //动画持续时间，动画完成设置初始值0
-    private float durations = 0;
     //判断是否正在平移动画
-    private boolean isTranslate = true;
+    private boolean isTranslate = false;
     private float time = 0;
-    //是否启动线性移动，优先级高
-    private boolean isStart = true;
     private Vector3 now;
 
     private int modelNumber = PAO;
@@ -96,26 +92,28 @@ public abstract class MyScreen implements Screen {
     private float delTime = 0;
     private float rayDistance = -1;
     private Vector3 old;
-    private float initAngle = 50f;
+    private float initAngle = -185f;
     private String message;
     private int mTao = 10;
     private boolean isRay = true;
     private boolean isPao = false;
     private boolean isUpdate = true;
-    private float addDetal = 0;
     private float mTextWidthRadiu;
     private Vector3 translate = new Vector3();
-    //    private AnimationController animationController4;
-    private float meZ1 = 12;
-    private float meZ2 = -7;
-    //屏幕坐标转换成的世界坐标
-    private Vector3 mUnproject;
     //世界坐标转换成的屏幕坐标
     private Vector3 mRealProject;
-    private int count = 0;
     private boolean isCanPlay = true;
     private int mQuadrant;
     private boolean isFind = true;
+    private boolean isTrans = true;
+    private float offsetX;
+    private float mOffsetY;
+    private boolean isY;
+    private boolean mB;
+    private int mMin = -6;
+    private int mMax = 6;
+    private boolean isX;
+    private Vector3 mVector3;
 
     public MyScreen() {
 
@@ -146,7 +144,7 @@ public abstract class MyScreen implements Screen {
 
         camera = new MagicCamera(67f, width, height);
         camera.translate(0, 0, 0);
-        camera.lookAt(10, 0, 10);
+        camera.lookAt(0, 0, 14);
         camera.far = 500.0f;
         camera.near = 1f;
 
@@ -168,22 +166,28 @@ public abstract class MyScreen implements Screen {
         texture.add(new TextureRegion(game.asset.get("find_center.png", Texture.class)));
         mTextWidthRadiu = texture.get(2).getRegionWidth() / 2;
 
-        GameObject shipInstanceHuanHu = new GameObject(game.asset.get("tiger/laohu-huanhu.g3dj", Model.class));
-        GameObject shipInstancePao = new GameObject(game.asset.get("tiger/laohu-pao.g3dj", Model.class));
-        GameObject shipInstanceZhuaQu = new GameObject(game.asset.get("tiger/laohu-zhuaqu.g3dj", Model.class));
+        GameObject shipInstanceHuanHu = new GameObject(game.asset.get("tiger/red2.g3dj", Model.class));
+        GameObject shipInstancePao = new GameObject(game.asset.get("tiger/red1.g3dj", Model.class));
+        GameObject shipInstanceZhuaQu = new GameObject(game.asset.get("tiger/red3.g3dj", Model.class));
 
-        int i = 9;
-        int j = 9;
-        boolean rd = Math.random() > 0.5;
-        if (rd) {
-            i = -i;
-        }
-        boolean rds = Math.random() > 0.5;
-        if (rds) {
-            j = -j;
-        }
-        shipInstancePao.transform.setToTranslation(i, 0, j);
-        mQuadrant = getQuadrant(i, j);
+        Material attribute1 = shipInstanceHuanHu.materials.get(0);
+        attribute1.set(new ColorAttribute(ColorAttribute.Diffuse, 1f, 1f, 1f, 1f));
+        Material attribute2 = shipInstancePao.materials.get(0);
+        attribute2.set(new ColorAttribute(ColorAttribute.Diffuse, 1f, 1f, 1f, 1f));
+        Material attribute3 = shipInstanceZhuaQu.materials.get(0);
+        attribute3.set(new ColorAttribute(ColorAttribute.Diffuse, 1f, 1f, 1f, 1f));
+//        int i = 9;
+//        int j = 9;
+//        boolean rd = Math.random() > 0.5;
+//        if (rd) {
+//            i = -i;
+//        }
+//        boolean rds = Math.random() > 0.5;
+//        if (rds) {
+//            j = -j;
+//        }
+        shipInstancePao.transform.setToTranslation(0, 0, 14);
+//        mQuadrant = getQuadrant(i, j);
 
         //        Take 001
         animationController2 = new AnimationController(shipInstanceHuanHu);
@@ -226,22 +230,25 @@ public abstract class MyScreen implements Screen {
      */
     public void getModelAngle() {
         Gdx.app.error("Quadrant", "mQuadrant   =   " + mQuadrant);
-        switch (mQuadrant) {
-            case 1:
-                initAngle = 135f;
-                break;
-            case 2:
-                initAngle = 135f;
-                break;
-            case 3:
-                initAngle = 135f - 90;
-                break;
-            case 4:
-                initAngle = 135f + 180;
-                break;
-        }
+//        switch (mQuadrant) {
+//            case 1:
+//                initAngle = 135f;
+//                break;
+//            case 2:
+//                initAngle = 135f;
+//                break;
+//            case 3:
+//                initAngle = 135f - 90;
+//                break;
+//            case 4:
+//                initAngle = 135f + 180;
+//                break;
+//        }
         for (int i = 0; i < instances.size; i++) {
-            instances.get(i).transform.rotate(0, 1, 0, initAngle);
+            if (i == 2)
+                instances.get(i).transform.rotate(0, 1, 0, -175f);
+            if (i != 2)
+                instances.get(i).transform.rotate(0, 1, 0, initAngle);
         }
     }
 
@@ -271,192 +278,12 @@ public abstract class MyScreen implements Screen {
             lazyBitmapFont.dispose();
     }
 
-    public void setDurations(int time) {
-        if (isStart) {
-            this.old = new Vector3(translate.x, translate.y, translate.z);
-            float i = (float) (Math.random() * (1.5 - 2) + 2);
-            float j = (float) (Math.random() * (1.5 - 2) + 2);
-            boolean rd = Math.random() > 0.5;
-            if (rd) {
-                i = -i;
-                j = -j;
-            }
-            float offsetX = old.x + i;
-            float offsetY = old.y;
-            float offsetZ = old.z + j;
-            if (offsetX > 0) {
-                if (offsetX <= -meZ2) {
-                    offsetX = -meZ2;
-                } else if (offsetX >= meZ1) {
-                    offsetX = meZ1;
-                }
-            } else {
-                if (offsetX >= meZ2) {
-                    offsetX = meZ2;
-                } else if (offsetX <= -meZ1) {
-                    offsetX = -meZ1;
-                }
-            }
-            if (offsetZ > 0) {
-                if (offsetZ >= meZ1) {
-                    offsetZ = meZ1;
-                } else if (offsetZ <= -meZ2) {
-                    offsetZ = -meZ2;
-                }
-            } else {
-                if (offsetZ <= -meZ1) {
-                    offsetZ = -meZ1;
-                } else if (offsetZ >= meZ2) {
-                    offsetZ = meZ2;
-                }
-            }
-
-            Gdx.app.error("model", "当前坐标  old.x  " + old.x + "  old.y  " + old.y + "  old.z  " + old.z);
-            Gdx.app.error("model", "目标坐标  offsetX  " + offsetX + "  offsetY  " + offsetY + "  offsetZ  " + offsetZ);
-            this.time = 0;
-            this.durations = time;
-            this.now = new Vector3(offsetX, offsetY, offsetZ);
-
-
-            getModelInstanceAngle();
-
-            isStart = false;
-        }
-    }
-
-    /**
-     * 平移渐变动画
-     */
-    public void translateAnimation() {
-        if (time > durations) {
-            isPao = false;
-            isStart = true;
-            isTranslate = false;
-            durations = 0;
-        } else {
-            if (!isStart) {
-                float renderTime = 1 / durations / 100;
-
-                float scollX = (int) (now.x - old.x) * renderTime;
-                float scollZ = (int) (now.z - old.z) * renderTime;
-                float scollY = (int) (now.y - old.y) * renderTime;
-
-                if (translate.x > 0) {
-                    if (translate.x <= -meZ2) {
-                        translate.x = -meZ2;
-                    } else if (translate.x >= meZ1) {
-                        translate.x = meZ1;
-                    }
-                } else {
-                    if (translate.x >= meZ2) {
-                        translate.x = meZ2;
-                    } else if (translate.x <= -meZ1) {
-                        translate.x = -meZ1;
-                    }
-                }
-                if (translate.z > 0) {
-                    if (translate.z >= meZ1) {
-                        translate.z = meZ1;
-                    } else if (translate.z <= -meZ2) {
-                        translate.z = -meZ2;
-                    }
-                } else {
-                    if (translate.z <= -meZ1) {
-                        translate.z = -meZ1;
-                    } else if (translate.z >= meZ2) {
-                        translate.z = meZ2;
-                    }
-                }
-                if (translate.y >= 5) {
-                    translate.y = 5;
-                } else if (translate.y <= -5) {
-                    translate.y = -5;
-                }
-                Gdx.app.error("model", "当前坐标  translate.x  " + translate.x + "  translate.y  " + translate.y + "  translate.z  " + translate.z);
-//                Gdx.app.error("time", "(now.x - old.x)  " + (now.x - old.x) + "   (now.z - old.z)  " + (now.z - old.z) + "  scollX " + scollX + "  scollZ " + scollZ);
-                instances.get(modelNumber).transform.translate(scollX, scollY, scollZ);
-                this.time += renderTime;
-            }
-        }
-    }
-
-    private void getV() {
-        //向量叉积
-        if (now == null || old == null)
-            return;
-        float v = now.x * old.z - old.x * now.z;
-
-        double nowL = Math.abs(Math.sqrt(now.x * now.x + now.z * now.z));
-        double oldL = Math.abs(Math.sqrt(old.x * old.x + old.z * old.z));
-        double noL = Math.abs(Math.sqrt((now.x - old.x) * (now.x - old.x) + (now.z - old.z) * (now.z - old.z)));
-        float degrees = (float) Math.toDegrees(Math.abs(Math.acos((nowL * nowL + oldL * oldL - noL * noL) / (2 * nowL * oldL))));
-
-        Quaternion mHuanQuaternion = new Quaternion();
-        instances.get(modelNumber).transform.getRotation(mHuanQuaternion);
-
-        Gdx.app.error("Quaternion", mHuanQuaternion.getAngle() + "");
-        if (!Double.isNaN(degrees)) {
-            if (v > 0) {
-                //顺时针
-                instances.get(modelNumber).transform.rotate(0, 1, 0, mHuanQuaternion.getAngle() + degrees + initAngle);
-            } else if (v < 0) {
-                //逆时针
-                instances.get(modelNumber).transform.rotate(0, 1, 0, mHuanQuaternion.getAngle() - degrees + initAngle);
-            } else {
-                //一条直线
-                if ((now.x > 0 && old.x > 0) || (now.x < 0 && old.x < 0)) {
-                    //同一象限
-                    instances.get(modelNumber).transform.rotate(0, 1, 0, mHuanQuaternion.getAngle() + 0);
-                } else {
-                    //不同象限
-                    instances.get(modelNumber).transform.rotate(0, 1, 0, mHuanQuaternion.getAngle() + 180);
-                }
-            }
-        }
-    }
-
-    private void getModelInstanceAngle() {
-        //向量叉积
-        float nowX = now.x - old.x;
-        float nowZ = now.z - old.z;
-        float v = nowX * old.z - old.x * nowZ;
-        double nowL = Math.abs(Math.sqrt(nowX * nowX + nowZ * nowZ));
-        double oldL = Math.abs(Math.sqrt(old.x * old.x + old.z * old.z));
-        double noL = Math.abs(Math.sqrt((nowX - old.x) * (nowX - old.x) + (nowZ - old.z) * (nowZ - old.z)));
-        float degrees = (float) Math.toDegrees(Math.abs(Math.acos((nowL * nowL + noL * noL - oldL * oldL) / (2 * nowL * noL))));
-        Quaternion quaternion = new Quaternion();
-        instances.get(modelNumber).transform.getRotation(quaternion);
-//        Gdx.app.error("model", "r  = " + degrees + "  v = " + v + "  quaternion.getAngle()   " + quaternion.getAngle());
-        if (!Double.isNaN(degrees)) {
-            if (v > 0) {
-                //顺时针
-                instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() - degrees + 180);
-            } else if (v < 0) {
-                //逆时针
-                instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() + degrees + 90);
-            } else {
-                //一条直线
-                if ((now.x > 0 && old.x > 0) || (now.x < 0 && old.x < 0)) {
-                    //同一象限
-                    instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() + 0);
-                } else {
-                    //不同象限
-                    instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() + 180);
-                }
-            }
-        }
-    }
-
     public void setFind(boolean find) {
         isFind = find;
     }
 
     public void setTranslate(boolean translate) {
         this.isTranslate = translate;
-    }
-
-    public void setStart(boolean start) {
-        isStart = start;
     }
 
     public void setUpdate(boolean update) {
@@ -552,6 +379,7 @@ public abstract class MyScreen implements Screen {
                         fontX = width * 0.91f;
                     }
 
+
                     //绘制指示器
                     spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
 
@@ -606,61 +434,95 @@ public abstract class MyScreen implements Screen {
             instances.get(modelNumber).transform.getTranslation(translate);
             //线性移动
             if (isTranslate && modelNumber != ZUO) {
-                setDurations(2);
-                translateAnimation();
+                setDuration(3);
+                if (time > 0.02) {
+                    old = translate;
+                    float offsetX = mVector3.x - old.x;
+                    float offsetY = mVector3.y - old.y;
+
+//                    if (isX) {
+//                        offsetX = old.x;
+//                    } else {
+//                        if (isTrans) {
+//                            if (offsetX <= mMin) {
+//                                isTrans = false;
+//                                isX = Math.random() >= 0.5;
+////                            isX = isTrans;
+////                            isTrans = Math.random() >= 0.5;
+////                            if (isTrans == isX) {
+////                                isTrans = !isX;
+////                            }
+//                            }
+//                            offsetX = old.x - 0.1f;
+//                        } else {
+//                            if (offsetX >= mMax) {
+//                                isTrans = true;
+//                                if (isY) {
+//                                    isY = false;
+//                                }
+////                            isX = isTrans;
+////                            isTrans = Math.random() >= 0.5;
+////                            if (isTrans == isX) {
+////                                isTrans = !isX;
+////                            }
+//                            }
+//                            offsetX = old.x + 0.1f;
+//                        }
+//                    }
+//                    if (isY) {
+//                        mOffsetY = old.y;
+//                    } else {
+//                        if (mB) {
+//                            if (mOffsetY >= mMax) {
+//                                mB = false;
+////                            isY = mB;
+////                            mB = Math.random() >= 0.5;
+////                            if (mB == isY) {
+////                                mB = !isY;
+////                            }
+//                                isY = Math.random() >= 0.5;
+//                            }
+//
+//                            mOffsetY = old.y + 0.1f;
+//                        } else {
+//                            if (mOffsetY <= mMin) {
+//                                mB = true;
+////                            isY = mB;
+//                                if (isX) {
+//                                    isX = false;
+//                                }
+////                            if (mB == isY) {
+////                                mB = !isY;
+////                            }
+//                            }
+//                            mOffsetY = old.y - 0.1f;
+//                        }
+//                    }
+                    Gdx.app.error("random", "offsetX   " + offsetX + "   mOffsetY   " + mOffsetY);
+                    float offsetZ = old.z;
+                    if (offsetX != old.x || mOffsetY != old.y) {
+                        this.now = new Vector3(offsetX, mOffsetY, offsetZ);
+                        instances.get(modelNumber).transform.setToTranslation(now);
+                        getModelAngle();
+                    }
+                    Gdx.app.error("translate", "当前坐标  translate.x  " + translate.x + "  translate.y  " + translate.y + "  translate.z  " + translate.z);
+                    time = 0;
+                } else {
+                    time += Gdx.graphics.getDeltaTime();
+                }
             }
 
             switchAnimationModel();
 
-
-            if (rayDistance != -1) {
-                Gdx.app.error("ray", "rayDistance  = " + rayDistance + "  mTextWidthRadiu = " + mTextWidthRadiu);
-            }
             /**
              * 添加射线
              */
 
             Gdx.app.error("TAG", "isPao    " + isPao + "    mTao    " + mTao);
             if (!isPao && isRay && number <= 12 && rayDistance != -1 && !isAnimation()) {
-//                Ray ray = camera.getPickRay(width / 2, height / 2);
-//                final GameObject instance = object;
-//                instance.transform.getTranslation(position);
-////                Vector3 unproject = camera.project(position);
-////                Gdx.app.error("ray", "unproject  X " + unproject.x + "  unproject   Y " + unproject.y + " unproject  Z " + unproject.z);
-//
-//                position.add(new Vector3(instance.center.x + 2, instance.center.y, instance.center.z));
-//                final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
-//                float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
-////                double abs = Math.abs(Math.sqrt((unproject.x - width / 2) * (unproject.x - width / 2) + (unproject.y - width / 2) * (unproject.y - width / 2)));
-//                Gdx.app.error("ray", "dist2 " + dist2 + "   ray.origin.x   " + ray.origin.x);
-
                 if (rayDistance < (mTextWidthRadiu * 3 / 4) && !isPositive) {
-//                    addDetal += Gdx.graphics.getDeltaTime();
-//                    if (addDetal > 1f && count == 0) {
-//                        mTao = new Random().nextInt(10);
-//                        addDetal = 0;
-//                    } else
-//                        mTao = 10;
-//
-//                    if (mTao < 5) {
-//                        count++;
-//                        setTranslate(true);
-//                        setModelNumber(PAO);
-//
-//                        isPao = true;
-//                        boolean rd = translate.y <= 1;
-//                        if (rd) {
-//                            this.now = new Vector3(translate.x, translate.y + 5, translate.z);
-//                        } else {
-//                            this.now = new Vector3(translate.x, translate.y - 5, translate.z);
-//                        }
-//                        time = 0;
-//                        durations = 1f;
-//                        isStart = false;
-//                    } else {
                     setTranslate(false);
                     setModelNumber(HUANHU);
-//                    }
                     if (modelNumber == HUANHU) {
                         addNumber();
                     } else {
@@ -672,6 +534,14 @@ public abstract class MyScreen implements Screen {
                     setModelNumber(PAO);
                 }
             }
+        }
+    }
+
+    private void setDuration(int i) {
+        if (isTrans) {
+            double x = -12 * Math.random() + 6;
+            double y = -12 * Math.random() + 6;
+            mVector3 = new Vector3((float) x, (float) y, translate.z);
         }
     }
 
@@ -692,21 +562,20 @@ public abstract class MyScreen implements Screen {
         this.modelNumber = number;
         if (instances.size > 0) {
             if (number == ZUO) {
-                camera.lookAt(-10, 0, 10);
+                camera.lookAt(0, 0, 14);
                 camera.update();
-//                Vector3 zuoVector3 = camera.unproject(new Vector3(width / 2, height / 2, 0));
-//                Gdx.app.error("zuo", "zuoVector3.x  " + zuoVector3.x + "   zuoVector3.y  " + zuoVector3.y + "  zuoVector3.z " + zuoVector3.z);
-                instances.get(number).transform.setToTranslation(-10, -0.5f, 10);
-//                instances.get(number).transform.rotate(mHuanQuaternion);
+                instances.get(number).transform.setToTranslation(0, -1f, 14);
+            } else if (number == HUANHU) {
+                camera.lookAt(translate.x, translate.y, 14);
+                camera.update();
+                instances.get(number).transform.setToTranslation(translate.x, translate.y, translate.z);
             } else {
                 instances.get(number).transform.setToTranslation(translate.x, translate.y, translate.z);
             }
-
-            if (number == HUANHU) {
-                getV();
-            } else {
-                getModelAngle();
-            }
+//            else {
+//                instances.get(number).transform.setToTranslation(translate.x, translate.y, translate.z + 5);
+//            }
+            getModelAngle();
         }
     }
 

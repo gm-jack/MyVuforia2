@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.rtmap.game.interfaces.AimListener;
 import com.rtmap.game.interfaces.AnimationListener;
+import com.rtmap.game.interfaces.CatchListener;
+import com.rtmap.game.text.NativeFont;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ public class AimActor extends Actor {
     public static final int STATE_NORMAL = 1;
     public static final int STATE_FAIL = 2;
     public static int STATE = STATE_SUCCESS;
+    private final float mTime = 0.35f;
     private int changeX;
     private int changeY;
 
@@ -85,6 +88,8 @@ public class AimActor extends Actor {
     private float textHeight;
     private boolean isCanPlay = false;
     private boolean isAnimationFirst = true;
+    private NativeFont lazyBitmapFont2;
+    private CatchListener catchListener;
 
     public AimActor(AssetManager assetManager) {
         super();
@@ -188,7 +193,7 @@ public class AimActor extends Actor {
                         batch.draw(mKeyFrames[0], aimWidths, aimHeights, progreeWidth / 2, progreeWidth / 2, progreeWidth, progreeWidth, getScaleX(), getScaleY(), degree - angle * i);
                         //                    }
                     }
-                    if (delta >= 0.5f) {
+                    if (delta >= mTime) {
                         delta = 0;
                     }
                 } else if (STATE == STATE_FAIL) {
@@ -196,7 +201,7 @@ public class AimActor extends Actor {
                     for (int i = 0; i < number; i++) {
                         batch.draw(mKeyFrames[1], aimWidths, aimHeights, progreeWidth / 2, progreeWidth / 2, progreeWidth, progreeWidth, getScaleX(), getScaleY(), degree - angle * i);
                     }
-                    if (delta >= 0.5f) {
+                    if (delta >= mTime) {
                         delta = 0;
                     }
                 }
@@ -220,12 +225,28 @@ public class AimActor extends Actor {
                     batch.draw(findReArray.get(3), 0, 0, width, height);
                     batch.draw(findReArray.get(1), width / 2 - tipWidth / 2, height / 2 - tipHeight / 2, tipWidth, tipHeight);
                     batch.draw(findReArray.get(2), width / 2 - textWidth / 2, height / 2 - tipHeight / 2 + tipHeight / 5, textWidth, textHeight);
+//                    float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
+//                    if (lazyBitmapFont2 == null) {
+//                        lazyBitmapFont2 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12), Color.WHITE));
+//                    }
+////            if (lazyBitmapFont2 == null)
+////                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
+//                    lazyBitmapFont2.appendText("点击任意位置继续");
+//                    lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - tipHeight / 2 - 15, width, Align.left, true);
+
+                    if (Gdx.input.isTouched()) {
+                        if (catchListener != null) {
+                            catchListener.onTouched(0);
+                        }
+                    }
                 }
             }
         }
     }
 
-
+    public void setFindListener(CatchListener catchListener) {
+        this.catchListener = catchListener;
+    }
     public boolean isAnimation() {
         return isAnimation;
     }
@@ -268,7 +289,7 @@ public class AimActor extends Actor {
             isOne = false;
         }
         delta += Gdx.graphics.getDeltaTime();
-        if (number <= maxNumber && delta > 0.5f)
+        if (number <= maxNumber && delta > mTime)
             number++;
     }
 
@@ -282,12 +303,12 @@ public class AimActor extends Actor {
         }
 
         delta += Gdx.graphics.getDeltaTime();
-        if (number > 0 && delta > 0.5f)
+        if (number > 0 && delta > mTime)
             number--;
     }
 
     public void initResources() {
-        texReArray = new ArrayList<>();
+        texReArray = new ArrayList<TextureRegion>();
         texReArray.add(new TextureRegion((Texture) assetManager.get("aim_success.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("aim_fail.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("anim_bg_top.png")));
@@ -306,7 +327,7 @@ public class AimActor extends Actor {
         bottomHeight = texReArray.get(5).getRegionHeight() * scale;
 
 
-        findReArray = new ArrayList<>();
+        findReArray = new ArrayList<TextureRegion>();
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_center.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_tip.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_text.png")));
@@ -335,6 +356,9 @@ public class AimActor extends Actor {
         }
         for (int i = 0; i < mKeyFrames.length; i++) {
             mKeyFrames[i].getTexture().dispose();
+        }
+        if(lazyBitmapFont2!=null){
+            lazyBitmapFont2.dispose();
         }
     }
 }

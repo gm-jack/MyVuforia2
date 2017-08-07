@@ -52,7 +52,7 @@ public class MainActor extends Actor {
     }
 
     private void initResource() {
-        texReArray = new ArrayList<>();
+        texReArray = new ArrayList<TextureRegion>();
         texReArray.add(new TextureRegion((Texture) asset.get("m_bg.png")));
         texReArray.add(new TextureRegion((Texture) asset.get("m_rule.png")));
 

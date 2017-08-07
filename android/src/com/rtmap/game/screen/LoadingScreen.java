@@ -58,6 +58,7 @@ public class LoadingScreen extends MyScreen {
     }
 
     public void initAssets() {
+        mGame.asset.load("use.png", Texture.class);
         mGame.asset.load("beed_open_bg.png", Texture.class);
         mGame.asset.load("find_bg.png", Texture.class);
         mGame.asset.load("aim_fail.png", Texture.class);
@@ -71,6 +72,7 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("anim_bg_bottom.png", Texture.class);
         mGame.asset.load("find_center.png", Texture.class);
         mGame.asset.load("find_tip.png", Texture.class);
+        mGame.asset.load("find_tip1.png", Texture.class);
         mGame.asset.load("find_text.png", Texture.class);
         mGame.asset.load("find_left_normal.png", Texture.class);
         mGame.asset.load("find_left_press.png", Texture.class);
@@ -84,6 +86,9 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("catch_good.png", Texture.class);
         mGame.asset.load("catch_miss.png", Texture.class);
         mGame.asset.load("catch_tip.png", Texture.class);
+        mGame.asset.load("catch_get.png", Texture.class);
+        mGame.asset.load("catch_no.png", Texture.class);
+        mGame.asset.load("catch_first.png", Texture.class);
         mGame.asset.load("catch_tip_text.png", Texture.class);
         mGame.asset.load("success_title.png", Texture.class);
         mGame.asset.load("success_center.png", Texture.class);
@@ -99,10 +104,11 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("success_open_press.png", Texture.class);
         mGame.asset.load("open_close.png", Texture.class);
         mGame.asset.load("open_again.png", Texture.class);
+        mGame.asset.load("again_again.png", Texture.class);
         mGame.asset.load("cover.png", Texture.class);
-        mGame.asset.load("tiger/laohu-zhuaqu.g3dj", Model.class);
-        mGame.asset.load("tiger/laohu-huanhu.g3dj", Model.class);
-        mGame.asset.load("tiger/laohu-pao.g3dj", Model.class);
+        mGame.asset.load("tiger/red1.g3dj", Model.class);
+        mGame.asset.load("tiger/red2.g3dj", Model.class);
+        mGame.asset.load("tiger/red3.g3dj", Model.class);
 //        mGame.asset.load("feng/fengguang.g3dj", Model.class);
 //        mGame.asset.load("tiger/tiger.g3dj", Model.class);
 //        mGame.asset.load("tiger/knight.g3dj", Model.class);
@@ -165,6 +171,7 @@ public class LoadingScreen extends MyScreen {
     }
 
     private void unLoadAsset() {
+        assetManager.unload("use.png");
         assetManager.unload("main_bg.png");
         assetManager.unload("loading_center.png");
         assetManager.unload("loading_in.png");
@@ -185,6 +192,7 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("anim_bg_bottom.png");
         mGame.asset.unload("find_center.png");
         mGame.asset.unload("find_tip.png");
+        mGame.asset.unload("find_tip1.png");
         mGame.asset.unload("find_text.png");
         mGame.asset.unload("find_left_normal.png");
         mGame.asset.unload("find_left_press.png");
@@ -198,6 +206,9 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("catch_good.png");
         mGame.asset.unload("catch_miss.png");
         mGame.asset.unload("catch_tip.png");
+        mGame.asset.unload("catch_get.png");
+        mGame.asset.unload("catch_no.png");
+        mGame.asset.unload("catch_first.png");
         mGame.asset.unload("catch_tip_text.png");
         mGame.asset.unload("success_title.png");
         mGame.asset.unload("success_center.png");
@@ -213,10 +224,11 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("success_open_press.png");
         mGame.asset.unload("open_close.png");
         mGame.asset.unload("open_again.png");
+        mGame.asset.unload("again_again.png");
         mGame.asset.unload("cover.png");
-        mGame.asset.unload("tiger/laohu-zhuaqu.g3dj");
-        mGame.asset.unload("tiger/laohu-huanhu.g3dj");
-        mGame.asset.unload("tiger/laohu-pao.g3dj");
+        mGame.asset.unload("tiger/red1.g3dj");
+        mGame.asset.unload("tiger/red2.g3dj");
+        mGame.asset.unload("tiger/red3.g3dj");
 //        mGame.asset.unload("feng/fengguang.g3dj");
 //        mGame.asset.unload("tiger/knight.g3dj");
 //        mGame.asset.unload("tiger/tiger.g3dj");

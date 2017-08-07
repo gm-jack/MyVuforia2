@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/MyVuforia.iml" filepath="$PROJECT_DIR$/MyVuforia.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/myvuforia2/myvuforia2.iml" filepath="$PROJECT_DIR$/myvuforia2/myvuforia2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vuforia/vuforia.iml" filepath="$PROJECT_DIR$/vuforia/vuforia.iml" />
     </modules>
   </component>
 </project>

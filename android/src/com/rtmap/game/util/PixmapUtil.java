@@ -7,13 +7,13 @@ import com.badlogic.gdx.graphics.Pixmap;
  */
 public class PixmapUtil {
     public static Pixmap createRoundedPixmap(Pixmap pixmap, int radius, int width, int height) {
-        Pixmap mask = getPixmapRounded(pixmap.getWidth(), pixmap.getHeight(), radius, android.graphics.Color.WHITE);//掩码
+        Pixmap mask = getPixmapRoundedRectangle(pixmap.getWidth(), pixmap.getHeight(), radius, android.graphics.Color.WHITE);//掩码
         Pixmap result = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);//保存结果
         pixmapMask(width, height, pixmap, mask, result, false);
         return result;
     }
 
-    //创建rouned rectangle
+    //创建round rectangle
     public static Pixmap getPixmapRoundedRectangle(int width, int height, int radius, int color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
@@ -33,7 +33,7 @@ public class PixmapUtil {
         return pixmap;
     }
 
-    //创建rouned rectangle
+    //创建round
     public static Pixmap getPixmapRounded(int width, int height, int radius, int color) {
 
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);

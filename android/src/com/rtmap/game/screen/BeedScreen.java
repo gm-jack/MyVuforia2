@@ -2,12 +2,15 @@ package com.rtmap.game.screen;
 
 
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,8 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.BeedBackActor;
@@ -26,14 +27,21 @@ import com.rtmap.game.actor.BeedItemActor;
 import com.rtmap.game.actor.CloseActor;
 import com.rtmap.game.actor.DetailActor;
 import com.rtmap.game.actor.GameBeedActor;
+import com.rtmap.game.actor.UseRuleActor;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedItemOnClickListener;
+import com.rtmap.game.interfaces.StartOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.scrollpane.BeedScrollPane;
 import com.rtmap.game.stage.BeedStage;
 import com.rtmap.game.util.Contacts;
+import com.rtmap.game.util.CustomDialog;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +50,16 @@ import java.util.List;
  * Created by yxy on 2017/2/20.
  */
 public class BeedScreen extends MyScreen {
+    private AndroidLauncher androidLauncher;
     private GameBeedActor gameBeedActor;
     private BeedStage beedStage;
     private MyGame mGame;
     private BeedBackActor beedBackActor;
     private Group group;
-    private Array<BeedItemActor> itemActors = new Array<>();
+    private Array<BeedItemActor> itemActors = new Array<BeedItemActor>();
     private BeedScrollPane beedScrollPane;
     private Table table;
-    public List<Result> list = new ArrayList<>();
+    public List<Result> list = new ArrayList<Result>();
     private AssetManager assetManager;
     private CloseActor closeActor;
     private DetailActor detailActor;
@@ -62,12 +71,17 @@ public class BeedScreen extends MyScreen {
             super.clicked(event, x, y);
         }
     };
-//    private ToastActor mActor;
+    private UseRuleActor mUseRuleActor;
+    //    private ToastActor mActor;
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         this.mGame = game;
         //瞄准怪兽舞台
-        beedStage = new BeedStage(viewport);
+        this.androidLauncher = androidLauncher;
+        SpriteBatch batch = new SpriteBatch();
+//        batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+        batch.setBlendFunction(GL20.GL_BLEND_SRC_ALPHA, GL20.GL_ONE);
+        beedStage = new BeedStage(viewport, batch);
         assetManager = new AssetManager();
         initResouce();
 
@@ -83,7 +97,6 @@ public class BeedScreen extends MyScreen {
         table = new Table();
         table.align(Align.top);
 
-
         beedScrollPane = new BeedScrollPane(table);
         beedScrollPane.setScrollingDisabled(true, false);//设置是否可上下、左右移动..这里设置了横向可移动、纵向不可移动
         beedScrollPane.setSmoothScrolling(true);
@@ -94,10 +107,15 @@ public class BeedScreen extends MyScreen {
         group.addActor(beedScrollPane);
 
         beedStage.addActor(group);
+
+        getData();
     }
 
     private void initResouce() {
         assetManager.load("beed_bg.png", Texture.class);
+        assetManager.load("m_bg.png", Texture.class);
+        assetManager.load("use.png", Texture.class);
+        assetManager.load("main_beed.png", Texture.class);
         assetManager.load("beed_title.png", Texture.class);
         assetManager.load("beed_back.png", Texture.class);
         assetManager.load("beed_item_bg.png", Texture.class);
@@ -143,12 +161,29 @@ public class BeedScreen extends MyScreen {
                     detailActor = new DetailActor(assetManager);
                     group.addActor(detailActor);
 
+                    //使用规则
+                    mUseRuleActor = new UseRuleActor(assetManager);
+                    mUseRuleActor.setListener(new StartOnClickListener() {
+                        @Override
+                        public void onClick() {
+                            androidLauncher.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showANewSingleButtonDialog();
+                                }
+                            });
+                        }
+                    });
+                    group.addActor(mUseRuleActor);
+
                     //绘制关闭按钮
                     closeActor = new CloseActor(assetManager);
 
                     closeActor.setListener(new BackOnClickListener() {
                         @Override
                         public void onClick() {
+                            if (mUseRuleActor != null)
+                                group.removeActor(mUseRuleActor);
                             if (detailActor != null)
                                 detailActor.setIsOpen(false);
                             closeActor.setIsShow(false);
@@ -196,10 +231,78 @@ public class BeedScreen extends MyScreen {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     Gdx.app.error("list", "touchDown");
                     event.stop();
-                    return true;
+                    return super.touchDown(event, x, y, pointer, button);
                 }
             });
         }
+    }
+
+    private TextView tvTitle;
+    private TextView tvContent;
+    private TextView tvOk;
+
+    private void showANewSingleButtonDialog() {
+        final CustomDialog dialog = new CustomDialog(androidLauncher);
+        dialog.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gdx.app.error("app", "setOnClickListener   " + dialog.isShowing());
+            }
+        });
+        dialog.show();
+
+//        GDXButtonDialog dialogs = mDManager.newDialog(GDXButtonDialog.class);
+//        dialogs.setTitle("使用规则");
+//        dialogs.addButton("确定");
+//        dialogs.setClickListener(new ButtonClickListener() {
+//            @Override
+//            public void click(int button) {
+//
+//            }
+//        });
+
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(androidLauncher, R.style.dialog);
+//        View inflate = View.inflate(androidLauncher, R.layout.dialog_rule, null);
+//        tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
+//        tvContent = (TextView) inflate.findViewById(R.id.tv_content);
+//        tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
+//        Gdx.app.error("app", "requestFocus   " + inflate.requestFocus());
+//
+//        tvOk.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                androidLauncher.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (isBuild) {
+//                            isBuild = false;
+//                            WindowManager manager = androidLauncher.getWindowManager();
+//                            manager.removeViewImmediate(mAlertDialog.getWindow().getDecorView());
+//                            addListeners();
+//                            Gdx.app.error("app", "setOnClickListener   " + mAlertDialog.isShowing());
+//                        }
+//                    }
+//                });
+//
+//            }
+//        });
+//        builder.setView(inflate);
+//        builder.setCancelable(false);
+//        if (!isBuild) {
+//            mAlertDialog = builder.create();
+//            mAlertDialog.setView(inflate, 0, 0, 0, 0);
+//
+//            mAlertDialog.getWindow().setBackgroundDrawableResource(R.drawable.shape);
+////            androidLauncher.runOnUiThread(new Runnable() {
+////                @Override
+////                public void run() {
+//            mAlertDialog.show();
+//            isBuild = true;
+////                }
+////            });
+//        }
+
+
     }
 
     @Override
@@ -219,7 +322,7 @@ public class BeedScreen extends MyScreen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.error("list", "resize");
-        getData();
+
         initListener();
     }
 
@@ -228,17 +331,59 @@ public class BeedScreen extends MyScreen {
         if (TextUtils.isEmpty(phoneNumber)) {
             return;
         }
-        Gdx.app.error("net",Contacts.LIST_NET + phoneNumber);
+        Gdx.app.error("net", Contacts.LIST_NET + phoneNumber);
         NetUtil.getInstance().get(Contacts.LIST_NET + phoneNumber, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String resultAsString = httpResponse.getResultAsString();
 //                showToast(resultAsString);
-                Gdx.app.error("http", resultAsString);
-                java.util.List<Result> lists = new Gson()
-                        .fromJson(resultAsString, new TypeToken<java.util.List<Result>>() {
-                        }.getType());
-                initData(lists);
+                List<Result> lists = new ArrayList<Result>();
+                try {
+                    JSONArray array = new JSONArray(resultAsString);
+                    for (int i = 0; i < array.length(); i++) {
+                        Result result = new Result();
+
+                        JSONObject object = array.getJSONObject(i);
+                        result.setBuildId(object.optString("buildId"));
+                        result.setCode(object.optString("code"));
+                        result.setMarketName(object.optString("marketName"));
+                        result.setShopName(object.optString("shopName"));
+                        result.setLevel(object.optString("level"));
+                        result.setMain(object.optString("main"));
+                        result.setLogoUrl(object.optString("logoUrl"));
+                        result.setExtend(object.optString("extend"));
+                        result.setStartTime(object.optString("startTime"));
+                        result.setEndTime(object.optString("endTime"));
+                        result.setPosition(object.optString("position"));
+                        result.setImgUrl(object.optString("imgUrl"));
+                        result.setQr(object.optString("qr"));
+                        result.setStatus(object.optString("status"));
+                        result.setTemplate(object.optString("template"));
+                        result.setTt(object.optString("tt"));
+                        result.setPid(object.optString("pid"));
+                        result.setNum(object.optString("num"));
+                        result.setIssue(object.optString("issue"));
+                        result.setCoupon(object.optString("coupon"));
+                        result.setOpenId(object.optString("openId"));
+                        result.setNickname(object.optString("nickname"));
+                        result.setHead(object.optString("head"));
+                        result.setDesc(object.optString("desc"));
+                        result.setRefund(object.optString("refund"));
+                        result.setWxsync(object.optString("wxsync"));
+                        result.setCardId(object.optString("cardId"));
+                        result.setShare(object.optString("share"));
+                        result.setFollow(object.optString("follow"));
+                        result.setPrice(object.optString("price"));
+                        result.setNotifyType(object.optString("notifyType"));
+                        result.setNotifyMessage(object.optString("notifyMessage"));
+
+                        lists.add(result);
+                    }
+
+                    initData(lists);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

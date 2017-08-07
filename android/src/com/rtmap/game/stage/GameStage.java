@@ -1,6 +1,6 @@
 package com.rtmap.game.stage;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by yxy on 2017/2/20.
  */
 public class GameStage extends Stage {
-    private List<Stage> stageList = new ArrayList<>();
+    private List<Stage> stageList = new ArrayList<Stage>();
 
     public GameStage() {
         this(new ScreenViewport());
@@ -20,6 +20,11 @@ public class GameStage extends Stage {
 
     public GameStage(Viewport viewport) {
         super(viewport);
+//        stageList.add(this);
+    }
+
+    public GameStage(Viewport viewport, Batch batch) {
+        super(viewport, batch);
 //        stageList.add(this);
     }
 

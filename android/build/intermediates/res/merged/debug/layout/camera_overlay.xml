@@ -2,7 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/camera_overlay_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent">
+
+    <com.rtmap.gm.myvuforia.SampleApplication.utils.ScanView
+        android:id="@+id/sv_scan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,11 +25,27 @@
             android:src="@mipmap/back"/>
     </LinearLayout>
 
-    <com.rtmap.gm.myvuforia.SampleApplication.utils.ScanView
-        android:id="@+id/sv_scan"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_load"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            style="@android:style/Widget.ProgressBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:textColor="@android:color/white"
+            android:text="正在加载..."/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -30,7 +53,7 @@
         android:layout_alignParentBottom="true"
         android:background="@android:color/black"
         android:gravity="center"
-        android:text="将AR识别图放入框内，开始扫描"
+        android:text="请到活动门店扫描AR识别图\n具体门店以官网为准"
         android:textColor="@android:color/white"
-        android:textSize="16sp"/>
+        android:textSize="15sp"/>
 </RelativeLayout>

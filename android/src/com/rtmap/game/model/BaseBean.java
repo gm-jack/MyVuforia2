@@ -1,7 +1,5 @@
 package com.rtmap.game.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 /**
@@ -17,11 +15,8 @@ public class BaseBean implements Serializable{
      * msg : 成功
      */
 
-    @SerializedName("code")
     private String code;
-    @SerializedName("data")
     private DataBean data;
-    @SerializedName("msg")
     private String msg;
 
     public String getCode() {
@@ -53,7 +48,6 @@ public class BaseBean implements Serializable{
          * otherPoint : 108
          */
 
-        @SerializedName("otherPoint")
         private int otherPoint;
 
         public int getOtherPoint() {

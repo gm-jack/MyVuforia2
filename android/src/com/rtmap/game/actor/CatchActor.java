@@ -15,9 +15,7 @@ import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.text.NativeFont;
 import com.rtmap.game.text.NativeFontPaint;
-import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
-import com.rtmap.game.util.SPUtil;
 import com.rtmap.game.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -101,6 +99,22 @@ public class CatchActor extends Actor {
     private float openFailWidth;
     private float openFailHeight;
     private boolean isShowFail = false;
+    //没有优惠券
+    private boolean isNo = false;
+    //已获取优惠券
+    private boolean isGet = false;
+    private float firstWidth;
+    private float firstHeight;
+    private float noWidth;
+    private float noHeight;
+    private float getWidth;
+    private float getHeight;
+    private boolean isNet = true;
+    private int netCount = 1;
+    private float openTitleWidth;
+    private float openTitleHeight;
+    private float mFloat1;
+    private float mFloat2;
 
     public CatchActor(AssetManager assetManager) {
         super();
@@ -110,10 +124,12 @@ public class CatchActor extends Actor {
         changeX = width / 2;
         changeY = height / 2;
         changeRadiu = height * 2 / 5;
-        pictureMeter = width * 0.136f;
+        pictureMeter = width * 0.15f;
         bottomHeight = height * 0.287f;
         mX = width * 0.293f;
         mFloat = height * 0.68f;
+        mFloat1 = height * 0.60f;
+        mFloat2 = height * 0.52f;
     }
 
     public void setCatchListener(CatchListener catchListener) {
@@ -235,36 +251,82 @@ public class CatchActor extends Actor {
             if (isSuccess) {
                 if (isOpen) {
                     batch.draw(successTexRe.get(2), 0, 0, width, height);
-                    batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
+
+
                     if (first) {
+                        batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
+                        batch.draw(texReArray.get(7), width / 2 - firstWidth / 2, height * 0.65f, firstWidth, firstHeight);
 
-                        batch.draw(openTexRe.get(3), width / 2 - openFailWidth / 2, height * 0.65f, openFailWidth, openFailHeight);
-
-                        float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "锦囊空空如也");
+                        float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "一大波优惠券等着你～");
                         if (lazyBitmapFont5 == null) {
                             lazyBitmapFont5 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(18), Color.WHITE));
                         }
 //                        if (lazyBitmapFont5 == null)
 //                            lazyBitmapFont5 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
-                        lazyBitmapFont5.appendText("锦囊空空如也");
-                        lazyBitmapFont5.draw(batch, "锦囊空空如也", width / 2 - length2 / 2, height * 0.55f, width, Align.left, true);
+                        lazyBitmapFont5.appendText("一大波优惠券等着你～");
+                        lazyBitmapFont5.draw(batch, "一大波优惠券等着你～", width / 2 - length2 / 2, mFloat2 + ScreenUtil.dp2px(18), width, Align.left, true);
 
-                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.55f - ScreenUtil.dp2px(22) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat2 - openTexRe.get(2).getRegionHeight(), openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
 
-                        float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "努力就有收获，再接再厉吧！");
+                        float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "摆好姿势，马上挑战吧！");
+                        if (lazyBitmapFont4 == null) {
+                            lazyBitmapFont4 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(14), Color.WHITE));
+                        }
+                        lazyBitmapFont4.appendText("摆好姿势，马上挑战吧！");
+                        lazyBitmapFont4.draw(batch, "摆好姿势，马上挑战吧！", width / 2 - length3 / 2, mFloat2 - ScreenUtil.dp2px(8), width, Align.left, true);
+
+                    } else if (isNo) {
+                        batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
+                        batch.draw(texReArray.get(6), width / 2 - noWidth / 2, height * 0.65f, noWidth, noHeight);
+
+                        float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "优惠券已经抢完了");
+                        if (lazyBitmapFont5 == null) {
+                            lazyBitmapFont5 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(18), Color.WHITE));
+                        }
+//                        if (lazyBitmapFont5 == null)
+//                            lazyBitmapFont5 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
+                        lazyBitmapFont5.appendText("优惠券已经抢完了");
+                        lazyBitmapFont5.draw(batch, "优惠券已经抢完了", width / 2 - length2 / 2, mFloat2 + ScreenUtil.dp2px(18), width, Align.left, true);
+
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat2 - openTexRe.get(2).getRegionHeight(), openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+
+                        float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "下次再来吧！");
+                        if (lazyBitmapFont4 == null) {
+                            lazyBitmapFont4 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(14), Color.WHITE));
+                        }
+                        lazyBitmapFont4.appendText("下次再来吧！");
+                        lazyBitmapFont4.draw(batch, "下次再来吧！", width / 2 - length3 / 2, mFloat2 - ScreenUtil.dp2px(8), width, Align.left, true);
+
+                    } else if (isGet) {
+                        batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
+                        batch.draw(texReArray.get(5), width / 2 - getWidth / 2, height * 0.65f, getWidth, getHeight);
+
+                        float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "本月你已领取优惠券");
+                        if (lazyBitmapFont5 == null) {
+                            lazyBitmapFont5 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(18), Color.WHITE));
+                        }
+//                        if (lazyBitmapFont5 == null)
+//                            lazyBitmapFont5 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
+                        lazyBitmapFont5.appendText("本月你已领取优惠券");
+                        lazyBitmapFont5.draw(batch, "本月你已领取优惠券", width / 2 - length2 / 2, mFloat2 + ScreenUtil.dp2px(18), width, Align.left, true);
+
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat2 - openTexRe.get(2).getRegionHeight(), openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+
+                        float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "请到我的卡包查看");
                         if (lazyBitmapFont4 == null) {
                             lazyBitmapFont4 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(14), Color.WHITE));
                         }
 //                        if (lazyBitmapFont4 == null)
 //                            lazyBitmapFont4 = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.WHITE);
-                        lazyBitmapFont4.appendText("努力就有收获，再接再厉吧！");
-                        lazyBitmapFont4.draw(batch, "努力就有收获，再接再厉吧！", width / 2 - length3 / 2, height * 0.55f - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - ScreenUtil.dp2px(18), width, Align.left, true);
+                        lazyBitmapFont4.appendText("请到我的卡包查看");
+                        lazyBitmapFont4.draw(batch, "请到我的卡包查看", width / 2 - length3 / 2, mFloat2 - ScreenUtil.dp2px(8), width, Align.left, true);
 
                     } else if (isWin) {
                         if (result == null)
                             return;
+                        batch.draw(openTexRe.get(4), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
                         //从顶部向下绘制
-                        batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() * 1.5f / 2, mFloat - openTexRe.get(1).getRegionHeight() / 2, getOriginX(), getOriginY(), openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight(), 1.5f, 1.5f, getRotation());
+                        batch.draw(openTexRe.get(1), width / 2 - openTitleWidth * 1.2f / 2, mFloat - openTitleHeight * 1.2f / 2, getOriginX(), getOriginY(), openTitleWidth, openTitleHeight, 1.2f, 1.2f, getRotation());
 
                         float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), result.getMain());
                         if (lazyBitmapFont1 == null) {
@@ -273,35 +335,40 @@ public class CatchActor extends Actor {
                         lazyBitmapFont1.appendText(result.getMain());
 //                        if (lazyBitmapFont1 == null)
 //                            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
-                        lazyBitmapFont1.draw(batch, result.getMain(), width / 2 - fontWidth1 / 2, mFloat - openTexRe.get(1).getRegionHeight(), width * 0.707f, Align.left, true);
 
-                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+                        lazyBitmapFont1.draw(batch, result.getMain(), width / 2 - fontWidth1 / 2, mFloat1 + ScreenUtil.dp2px(18), width * 0.707f, Align.left, true);
 
-                        float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "请到我的-优惠券里查看");
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat1 - openTexRe.get(2).getRegionHeight(), openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+
+                        float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "请到我的卡包查看");
                         if (lazyBitmapFont2 == null) {
-                            lazyBitmapFont2 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12), Color.WHITE));
+                            lazyBitmapFont2 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(14), Color.WHITE));
                         }
-                        lazyBitmapFont2.appendText("请到我的-优惠券里查看");
-                        lazyBitmapFont2.draw(batch, "请到我的-优惠券里查看", width / 2 - fontWidth2 / 2, mFloat - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - openTexRe.get(2).getRegionHeight() - 25, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.appendText("请到我的卡包查看");
+                        lazyBitmapFont2.draw(batch, "请到我的卡包查看", width / 2 - fontWidth2 / 2, mFloat1 - openTexRe.get(2).getRegionHeight() - ScreenUtil.dp2px(5), width * 0.707f, Align.left, true);
                         lazyBitmapFont2.appendText(result.getShopName());
-                        lazyBitmapFont2.draw(batch, result.getShopName(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.draw(batch, result.getShopName(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 5 / 4, width * 0.707f, Align.left, true);
                         lazyBitmapFont2.appendText("门店信息");
                         lazyBitmapFont2.draw(batch, "门店信息", mX, bottomHeight + pictureMeter * 7 / 4, width * 0.707f, Align.left, true);
 
                         if (lazyBitmapFont3 == null) {
-                            lazyBitmapFont3 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(10), Color.WHITE));
+                            lazyBitmapFont3 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12), Color.WHITE));
                         }
 //                        if (lazyBitmapFont3 == null)
 //                            lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.WHITE);
-                        lazyBitmapFont2.appendText("地址:" + result.getPosition());
-                        lazyBitmapFont3.draw(batch, "地址:" + result.getPosition(), mX, bottomHeight, width * 0.707f, Align.left, true);
-                        lazyBitmapFont2.appendText(result.getDesc());
-                        lazyBitmapFont3.draw(batch, result.getDesc(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 2, width * 0.707f, Align.left, true);
-                        lazyBitmapFont2.appendText("离你0.2KM");
-                        lazyBitmapFont3.draw(batch, "离你0.2KM", mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 3 / 4, width * 0.707f, Align.left, true);
+                        String resultPosition = result.getPosition();
+                        String start = resultPosition.substring(0, resultPosition.indexOf("("));
+                        String end = resultPosition.substring(resultPosition.indexOf("("), resultPosition.length());
+                        lazyBitmapFont3.appendText("地址:" + start + "\n" + end);
+                        lazyBitmapFont3.draw(batch, "地址:" + start + "\n" + end, mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 3 / 4, width * 0.86f - mX - pictureMeter, Align.left, true);
+//                        lazyBitmapFont3.appendText(result.getDesc());
+//                        lazyBitmapFont3.draw(batch, result.getDesc(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 2, width * 0.707f, Align.left, true);
+//                        lazyBitmapFont3.appendText("离你0.2KM");
+//                        lazyBitmapFont3.draw(batch, "离你0.2KM", mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 3 / 4, width * 0.707f, Align.left, true);
 
-                        if (null != result && null != result.getImgUrl() && texture == null) {
-                            NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {
+                        if (null != result && null != result.getLogoUrl() && texture == null && isNet && netCount <= 4) {
+                            isNet = false;
+                            NetUtil.getInstance().getPicture(result.getLogoUrl(), new Net.HttpResponseListener() {
                                 @Override
                                 public void handleHttpResponse(Net.HttpResponse httpResponse) {
                                     // 获取响应状态
@@ -327,32 +394,38 @@ public class CatchActor extends Actor {
                                             public void run() {
                                                 // 把字节数组加载为 Pixmap
                                                 Pixmap pixmap = new Pixmap(result, 0, result.length);
-                                                // 把 pixmap 加载为纹理
+
                                                 texture = new Texture(pixmap);
                                                 // pixmap 不再需要使用到, 释放内存占用
                                                 pixmap.dispose();
                                             }
                                         });
                                     } else {
+                                        isNet = true;
+                                        netCount++;
                                         Gdx.app.error("http", "请求失败, 状态码: " + httpStatus.getStatusCode());
                                     }
                                 }
 
                                 @Override
                                 public void failed(Throwable t) {
+                                    netCount++;
+                                    isNet = true;
                                     Gdx.app.error("http", t.getMessage());
                                 }
 
                                 @Override
                                 public void cancelled() {
+                                    isNet = true;
                                     Gdx.app.error("http", "请求取消");
                                 }
                             });
-                        } else {
-                            if (texture != null)
-                                batch.draw(texture, mX, bottomHeight + pictureMeter / 4, pictureMeter, pictureMeter);
                         }
+                        if (texture != null)
+                            batch.draw(texture, mX, bottomHeight + pictureMeter / 4, pictureMeter, pictureMeter);
+
                     } else {
+                        batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
 //                        float length1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点");
 //                        if (lazyBitmapFont1 == null)
 //                            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
@@ -366,9 +439,9 @@ public class CatchActor extends Actor {
 //                        if (lazyBitmapFont5 == null)
 //                            lazyBitmapFont5 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
                         lazyBitmapFont5.appendText("锦囊空空如也");
-                        lazyBitmapFont5.draw(batch, "锦囊空空如也", width / 2 - length2 / 2, height * 0.55f, width, Align.left, true);
+                        lazyBitmapFont5.draw(batch, "锦囊空空如也", width / 2 - length2 / 2, mFloat2 + ScreenUtil.dp2px(18), width, Align.left, true);
 
-                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.55f - ScreenUtil.dp2px(22) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat2 - openTexRe.get(2).getRegionHeight(), openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
 
                         float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "努力就有收获，再接再厉吧！");
                         if (lazyBitmapFont4 == null) {
@@ -377,7 +450,7 @@ public class CatchActor extends Actor {
 //                        if (lazyBitmapFont4 == null)
 //                            lazyBitmapFont4 = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.WHITE);
                         lazyBitmapFont4.appendText("努力就有收获，再接再厉吧！");
-                        lazyBitmapFont4.draw(batch, "努力就有收获，再接再厉吧！", width / 2 - length3 / 2, height * 0.55f - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - ScreenUtil.dp2px(18), width, Align.left, true);
+                        lazyBitmapFont4.draw(batch, "努力就有收获，再接再厉吧！", width / 2 - length3 / 2, mFloat2 - ScreenUtil.dp2px(8), width, Align.left, true);
                     }
 
                 } else {
@@ -412,14 +485,14 @@ public class CatchActor extends Actor {
             batch.draw(successTexRe.get(2), 0, 0, width, height);
             batch.draw(mKeyFrames[1], width / 2 - mKey2Width / 2, height / 2 - mKey2Height / 2, mKey2Width, mKey2Height);
             batch.draw(mKeyFrames[2], width / 2 - mKey3Width / 2, height / 2 - mKey2Height / 2 + mKey2Height / 5, mKey3Width, mKey3Height);
-            float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
-            if (lazyBitmapFont2 == null) {
-                lazyBitmapFont2 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12), Color.WHITE));
-            }
-//            if (lazyBitmapFont2 == null)
-//                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
-            lazyBitmapFont2.appendText("点击任意位置继续");
-            lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - mKey2Height / 2 - 15, width, Align.left, true);
+//            float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
+//            if (lazyBitmapFont2 == null) {
+//                lazyBitmapFont2 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12), Color.WHITE));
+//            }
+////            if (lazyBitmapFont2 == null)
+////                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
+//            lazyBitmapFont2.appendText("点击任意位置继续");
+//            lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - mKey2Height / 2 - 15, width, Align.left, true);
 
             if (Gdx.input.isTouched()) {
                 if (catchListener != null) {
@@ -431,12 +504,14 @@ public class CatchActor extends Actor {
         if (isShowFail) {
             batch.draw(texReArray.get(4), width / 2 - goodWidth / 2, height / 2 - goodHeight / 2, goodWidth, goodHeight);
         }
-//        Affine2 affine2 = new Affine2();
-//        affine2.setToScaling(4, 4);
-//        int scale = 255 / texReArray.get(2).getRegionHeight();
-//        Gdx.app.error("gdx", scale + "");
-////        batch.draw(texReArray.get(2), width / 2 - 255, height / 2 - 255, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
-//        batch.draw(texReArray.get(2), 0, 0, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
+    }
+
+    public void setNo(boolean no) {
+        isNo = no;
+    }
+
+    public void setGet(boolean get) {
+        isGet = get;
     }
 
     public void setShowFail(boolean showFail) {
@@ -484,20 +559,29 @@ public class CatchActor extends Actor {
     }
 
     public void initResources() {
-        texReArray = new ArrayList<>();
+        texReArray = new ArrayList<TextureRegion>();
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_bg.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_center.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_circle.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_good.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_miss.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("catch_get.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("catch_no.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("catch_first.png")));
 
         mScale = (float) width / (float) texReArray.get(0).getRegionWidth();
         catchCenterWidth = width * 0.4f;
         catchCenterHeight = width * 0.4f;
         goodWidth = texReArray.get(3).getRegionWidth() * mScale;
         goodHeight = texReArray.get(3).getRegionHeight() * mScale;
+        firstWidth = texReArray.get(7).getRegionWidth() * mScale;
+        firstHeight = texReArray.get(7).getRegionHeight() * mScale;
+        noWidth = texReArray.get(6).getRegionWidth() * mScale;
+        noHeight = texReArray.get(6).getRegionHeight() * mScale;
+        getWidth = texReArray.get(5).getRegionWidth() * mScale;
+        getHeight = texReArray.get(5).getRegionHeight() * mScale;
 
-        successTexRe = new ArrayList<>();
+        successTexRe = new ArrayList<TextureRegion>();
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_title.png")));
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_center.png")));
         successTexRe.add(new TextureRegion((Texture) assetManager.get("cover.png")));
@@ -512,9 +596,12 @@ public class CatchActor extends Actor {
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_title.png")));
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_line.png")));
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_fail.png")));
+        openTexRe.add(new TextureRegion((Texture) assetManager.get("open_bg.png")));
 
-        openFailWidth = (float) openTexRe.get(3).getRegionWidth() * 2;
-        openFailHeight = (float) openTexRe.get(3).getRegionHeight() * 2;
+        openFailWidth = (float) openTexRe.get(3).getRegionWidth() * mScale;
+        openFailHeight = (float) openTexRe.get(3).getRegionHeight() * mScale;
+        openTitleWidth = (float) openTexRe.get(1).getRegionWidth() * mScale;
+        openTitleHeight = (float) openTexRe.get(1).getRegionHeight() * mScale;
 
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("catch_tip.png"));
         mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("find_tip.png"));

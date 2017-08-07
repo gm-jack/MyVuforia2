@@ -78,6 +78,8 @@ public class Result implements Serializable {
     private String notifyMessage;
 
     public String getCode() {
+        if (code == null)
+            return "";
         return code;
     }
 

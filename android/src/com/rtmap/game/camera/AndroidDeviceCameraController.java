@@ -48,6 +48,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public synchronized void prepareCamera() {
+
         mLayout = new FrameLayout(androidLauncher);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mLayout.setLayoutParams(params);
@@ -71,8 +72,9 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 //            mCameraSurface.getCamera().startPreview();
 //        }
 
-        if (mCamera != null)
+        if (mCamera != null && !mCamera.cameraRunning())
             mCamera.onResume();
+        setFilter();
     }
 
     @Override
@@ -82,11 +84,8 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             if (parentView instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) parentView;
                 viewGroup.removeView(mGlSurfaceView);
-//                viewGroup.removeView(mCameraSurface);
             }
-//            if (mCameraSurface.getCamera() != null) {
-//                mCameraSurface.getCamera().stopPreview();
-//            }
+
             mCamera.onPause();
             androidLauncher.restoreFixedSize();
         }
@@ -160,11 +159,14 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public synchronized void stoPreviewAsync() {
-        if (mCamera != null) {
-            mCamera.releaseCamera();
+        Runnable r = new Runnable() {
+            public void run() {
+                stopPreview();
+            }
+        };
+        androidLauncher.post(r);
 //            mCameraSurface.getCamera().setPreviewCallback(null);
 //            mCameraSurface.getCamera().stopPreview();
-        }
     }
 
     private class CameraLoader {
@@ -210,6 +212,10 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
             boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
             mGPUImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false);
+        }
+
+        public boolean cameraRunning() {
+            return mCameraInstance != null;
         }
 
         /**

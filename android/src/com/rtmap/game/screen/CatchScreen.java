@@ -4,10 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AgainActor;
@@ -26,6 +26,9 @@ import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,7 +68,10 @@ public class CatchScreen extends MyScreen {
         this.mGame = game;
         this.context = androidLauncher;
         //捕捉怪兽舞台
-        catchStage = new CatchStage(viewport);
+        SpriteBatch batch = new SpriteBatch();
+//        batch.setBlendFunction(GL20.GL_DST_ALPHA, GL20.GL_ONE_MINUS_DST_ALPHA);
+        batch.setBlendFunction(GL20.GL_BLEND_SRC_ALPHA, GL20.GL_ONE);
+        catchStage = new CatchStage(viewport, batch);
 
         group3 = new Group();
         catchActor = new CatchActor(mGame.asset);
@@ -134,7 +140,7 @@ public class CatchScreen extends MyScreen {
                             catchActor.setIsSuccess(true);
 
                         }
-                    }, 500);
+                    }, 1000);
                 }
 
                 @Override
@@ -165,7 +171,7 @@ public class CatchScreen extends MyScreen {
                             catchActor.setFail(true);
                             catchActor.setIsSuccess(false);
                         }
-                    }, 500);
+                    }, 1000);
                 }
 
                 @Override
@@ -179,12 +185,13 @@ public class CatchScreen extends MyScreen {
                                     @Override
                                     public void run() {
                                         if (mGame != null)
-                                            mGame.showAimScreen(true);
+                                            mGame.showAimScreen(true, false);
                                     }
                                 });
                             }
                         }, 500);
                     } else if (num == 1) {
+                        group3.addActor(catActor);
                         catchActor.setIsCatchTip(false);
                         catchActor.setIsStop(false);
                     }
@@ -205,7 +212,7 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onClick() {
                     if (mGame != null)
-                        mGame.showAimScreen(true);
+                        mGame.showAimScreen(true, true);
                 }
             });
         if (beedActor != null)
@@ -228,10 +235,32 @@ public class CatchScreen extends MyScreen {
 
                 @Override
                 public void onSuccessClick() {
+                    mGame.stopCamera();
                     Gdx.app.error("gdx", "onSuccessClick()");
                     group3.removeActor(backActor);
                     group3.removeActor(beedActor);
-                    setResult();
+
+                    Boolean isActive = (Boolean) SPUtil.get(Contacts.ACTIVE, true);
+                    if (firstCatch) {
+                        catActor.removeListener();
+                        catActor.setIsShow(false);
+                        catchActor.setIsFirst(firstCatch);
+                        catchActor.setIsOpen(true);
+                        againActor.setIsShow(true);
+                        closeActor.setIsShow(true);
+                        //引导
+                        SPUtil.put(Contacts.FIRST, false);
+
+                    } else if (!isActive) {
+                        catActor.removeListener();
+                        catActor.setIsShow(false);
+                        catchActor.setNo(true);
+                        catchActor.setIsOpen(true);
+                        againActor.setIsShow(true);
+                        closeActor.setIsShow(true);
+                    } else {
+                        setResult();
+                    }
                 }
             });
         if (closeActor != null)
@@ -239,7 +268,9 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onClick() {
                     if (mGame != null)
-                        mGame.showAimScreen(true);
+                        mGame.showAimScreen(true, true);
+
+
                 }
             });
         if (againActor != null)
@@ -247,9 +278,8 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void againClick() {
                     if (mGame != null)
-                        mGame.showAimScreen(true);
+                        mGame.showAimScreen(true, true);
 
-                    SPUtil.put(Contacts.FIRST, false);
                 }
             });
     }
@@ -266,25 +296,63 @@ public class CatchScreen extends MyScreen {
         NetUtil.getInstance().getConnection(Contacts.WIN_NET + phoneNumber, new NetUtil.HttpResponse() {
             @Override
             public void responseString(String response) {
-                Gdx.app.error("http", "responseString  ==  " + response);
 
-                Result result = null;
                 try {
-                    result = new Gson().fromJson(response, Result.class);
-                } catch (JsonSyntaxException e) {
+                    Result result = new Result();
+                    JSONObject object = new JSONObject(response);
+                    result.setBuildId(object.optString("buildId"));
+                    result.setCode(object.optString("code"));
+                    result.setMarketName(object.optString("marketName"));
+                    result.setShopName(object.optString("shopName"));
+                    result.setLevel(object.optString("level"));
+                    result.setMain(object.optString("main"));
+                    result.setLogoUrl(object.optString("logoUrl"));
+                    result.setExtend(object.optString("extend"));
+                    result.setStartTime(object.optString("startTime"));
+                    result.setEndTime(object.optString("endTime"));
+                    result.setPosition(object.optString("position"));
+                    result.setImgUrl(object.optString("imgUrl"));
+                    result.setQr(object.optString("qr"));
+                    result.setStatus(object.optString("status"));
+                    result.setTemplate(object.optString("template"));
+                    result.setTt(object.optString("tt"));
+                    result.setPid(object.optString("pid"));
+                    result.setNum(object.optString("num"));
+                    result.setIssue(object.optString("issue"));
+                    result.setCoupon(object.optString("coupon"));
+                    result.setOpenId(object.optString("openId"));
+                    result.setNickname(object.optString("nickname"));
+                    result.setHead(object.optString("head"));
+                    result.setDesc(object.optString("desc"));
+                    result.setRefund(object.optString("refund"));
+                    result.setWxsync(object.optString("wxsync"));
+                    result.setCardId(object.optString("cardId"));
+                    result.setShare(object.optString("share"));
+                    result.setFollow(object.optString("follow"));
+                    result.setPrice(object.optString("price"));
+                    result.setNotifyType(object.optString("notifyType"));
+                    result.setNotifyMessage(object.optString("notifyMessage"));
+                    Gdx.app.error("result", "" + result.toString());
+                    if ("0".equals(result.getCode())) {
+                        isWin = true;
+                        catchActor.setIsWin(isWin);
+                        catchActor.setData(result);
+                    } else if ("7".equals(result.getCode()) || "1".equals(result.getCode())|| "2".equals(result.getCode())) {
+                        isWin = false;
+                        catchActor.setNo(true);
+                    } else if ("4".equals(result.getCode())){
+                        isWin = false;
+                        catchActor.setGet(true);
+                    }else {
+                        isWin = false;
+                        catchActor.setIsWin(isWin);
+                    }
+                    catchActor.setIsOpen(true);
+                    againActor.setIsShow(!isWin);
+                    closeActor.setIsShow(true);
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (result != null && "0".equals(result.getCode())) {
-                    isWin = true;
-                    catchActor.setIsWin(isWin);
-                    catchActor.setData(result);
-                } else {
-                    isWin = false;
-                    catchActor.setIsWin(isWin);
-                }
-                catchActor.setIsOpen(true);
-                againActor.setIsShow(!isWin);
-                closeActor.setIsShow(true);
             }
 
             @Override
@@ -296,7 +364,7 @@ public class CatchScreen extends MyScreen {
 
     private void fail() {
         isWin = false;
-        catchActor.setIsWin(isWin);
+        catchActor.setNo(true);
         catchActor.setIsOpen(true);
         againActor.setIsShow(!isWin);
         closeActor.setIsShow(true);
@@ -333,8 +401,9 @@ public class CatchScreen extends MyScreen {
             Gdx.app.error("gdx", "CatchScreen resize");
             isInit = false;
             catchActor.setIsStop(true);
-            firstCatch = (boolean) SPUtil.get(Contacts.FIRST, true);
+            firstCatch = (Boolean) SPUtil.get(Contacts.FIRST, true);
             catchActor.setIsFirst(firstCatch);
+            againActor.setFirstCatch(firstCatch);
             if (timer == null)
                 timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -343,9 +412,10 @@ public class CatchScreen extends MyScreen {
                     catchActor.setCatch(false);
                     catchActor.setIsCatchTip(firstCatch);
                     if (!firstCatch) {
+                        group3.addActor(catActor);
                         catchActor.setIsStop(false);
                     }
-                    group3.addActor(catActor);
+
                     initListener();
                 }
             }, 1000);
