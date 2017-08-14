@@ -48,6 +48,7 @@ public class DetailActor extends Actor {
     private boolean isShow = false;
     private NativeFont lazyBitmapFont4;
     private String mQr;
+    private boolean isFirstTouch = true;
 
     public DetailActor(AssetManager assetManager) {
         super();
@@ -74,7 +75,8 @@ public class DetailActor extends Actor {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (startOnClickListener != null) {
+                if (startOnClickListener != null && isFirstTouch) {
+                    isFirstTouch = false;
                     startOnClickListener.onClick();
                 }
             }
@@ -125,9 +127,8 @@ public class DetailActor extends Actor {
 //            lazyBitmapFont2.appendText("店内部分商品参加活动");
 //            lazyBitmapFont2.draw(batch, "店内部分商品参加活动", width / 2 - fontWidth2 / 2, oriY + bgH * 0.690f - ScreenUtil.dp2px(14) / 2, width * 0.707f, Align.left, true);
             float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), mQr);
-
             lazyBitmapFont2.appendText(mQr);
-            lazyBitmapFont2.draw(batch, mQr, width / 2 - qrWidth / 2, oriY + bgH * 0.348f - ScreenUtil.dp2px(14) / 2, width * 0.707f, Align.left, true);
+            lazyBitmapFont2.draw(batch, mQr, width / 2 - fontWidth3 / 2, oriY + bgH * 0.348f - ScreenUtil.dp2px(14) / 2, width * 0.707f, Align.left, true);
 
 //            if (lazyBitmapFont3 == null)
 //                lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
@@ -138,9 +139,9 @@ public class DetailActor extends Actor {
             if (lazyBitmapFont4 == null) {
                 lazyBitmapFont4 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12), Color.WHITE));
             }
-            float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "有效期限：" + result.getStartTime() + "-" + result.getEndTime());
-            lazyBitmapFont4.appendText("有效期限： " + result.getStartTime() + "-" + result.getEndTime());
-            lazyBitmapFont4.draw(batch, "有效期限： " + result.getStartTime() + "-" + result.getEndTime(), width / 2 - length3 / 2, oriY + bgH * 0.24f - ScreenUtil.dp2px(5), width * 0.63f, Align.left, true);
+            float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "有效期限：" + result.getStartTime() + " — " + result.getEndTime());
+            lazyBitmapFont4.appendText("有效期限：" + result.getStartTime() + " — " + result.getEndTime());
+            lazyBitmapFont4.draw(batch, "有效期限：" + result.getStartTime() + " — " + result.getEndTime(), width / 2 - length3 / 2, oriY + bgH * 0.24f - ScreenUtil.dp2px(5), width * 0.63f, Align.left, true);
             if (TextUtils.isEmpty(content)) {
                 float length2 = 0;
                 float lengthMore = ScreenUtil.getLength(ScreenUtil.dp2px(12), "...");
@@ -274,16 +275,6 @@ public class DetailActor extends Actor {
         }
     }
 
-    private String formatformatQr(String qr) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < qr.length(); i++) {
-            if(i%4==0&&i!=0){
-                buffer.append(" ");
-            }
-            buffer.append(qr.charAt(i));
-        }
-        return buffer.toString();
-    }
 
     public void setIsOpen(boolean isOpen) {
         this.isOpen = isOpen;
@@ -299,8 +290,7 @@ public class DetailActor extends Actor {
     public void setResult(Result item) {
         this.result = item;
         if (!TextUtils.isEmpty(result.getQr())) {
-            mQr = formatformatQr(result.getQr());
-            Gdx.app.error("file", Gdx.files.getExternalStoragePath() + Contacts.BITMAP_SD + result.getQr() + ".png");
+            mQr = result.getQr();
             try {
                 texture1 = new Texture(Gdx.files.absolute(Gdx.files.getExternalStoragePath() + Contacts.BITMAP_SD + MD5Encoder.encode(result.getQr() + ".png")));
             } catch (Exception e) {
@@ -310,6 +300,7 @@ public class DetailActor extends Actor {
                 ZXingUtil.createQr(result.getQr(), qrWidth, qrWidth, new LoadCompleteListener() {
                     @Override
                     public void load(final String path) {
+                        Gdx.app.error("qrcode", path);
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {

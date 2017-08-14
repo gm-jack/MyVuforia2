@@ -8,13 +8,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.net.HttpRequestBuilder;
-import com.rtmap.game.AndroidLauncher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 /**
@@ -44,6 +44,30 @@ public class NetUtil {
         memoryUtil = new MemoryUtil();
     }
 
+    public boolean checkConnection(Context context) {
+        ConnectivityManager CManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo NInfo = CManager.getActiveNetworkInfo();
+        try {
+            if (NInfo != null && NInfo.isConnectedOrConnecting()) {
+                if (InetAddress.getByName("www.163.com").isReachable(1000)) {
+                    Gdx.app.error("http", "reachable()");
+                    // host reachable
+                    return true;
+                } else {
+                    Gdx.app.error("http", "not reachable()");
+                    return false;
+                    // host not reachable
+                }
+            } else {
+                Gdx.app.error("http", "fail()");
+                return false;
+            }
+        } catch (Exception e) {
+            Gdx.app.error("http", e.getMessage());
+            return false;
+        }
+    }
+
     public FileUtil getFileUtil() {
         return fileUtil;
     }
@@ -57,15 +81,15 @@ public class NetUtil {
      *
      * @return
      */
-    public boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) AndroidLauncher
-                .getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null) {
-            return networkInfo.isAvailable();
-        }
-        return false;
-    }
+//    public boolean checkConnection() {
+//        ConnectivityManager connectivityManager = (ConnectivityManager) AndroidLauncher
+//                .getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+//        if (networkInfo != null) {
+//            return networkInfo.isAvailable();
+//        }
+//        return false;
+//    }
 
     /**
      * Get方式请求
@@ -133,6 +157,10 @@ public class NetUtil {
                 "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url(url).build();
         Gdx.net.sendHttpRequest(httpRequest, responseListener);
     }
+    public void getText(String url, Net.HttpResponseListener responseListener) {
+        Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url(url).build();
+        Gdx.net.sendHttpRequest(httpRequest, responseListener);
+    }
 
     public Pixmap getLocalPicture(String url) {
         Pixmap lru = memoryUtil.getLru(url);
@@ -158,7 +186,7 @@ public class NetUtil {
         Gdx.net.sendHttpRequest(httpRequest, responseListener);
     }
 
-    public  interface HttpResponse {
+    public interface HttpResponse {
         void responseString(String response);
 
         void responseFail();

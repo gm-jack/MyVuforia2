@@ -1,5 +1,6 @@
 package com.rtmap.game.screen;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.badlogic.gdx.Gdx;
@@ -42,6 +43,7 @@ public class AimScreen extends MyScreen {
     private boolean isFirst = true;
     private boolean isAim = false;
     private boolean isAnimation = true;
+    private CustomDialog mCustomDialog;
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
@@ -225,7 +227,7 @@ public class AimScreen extends MyScreen {
     @Override
     public void resize(int width, int height) {
 //        int num = GdxUtil.getNum();
-//        Gdx.app.error("dialog", "num   " + num);
+        Gdx.app.error("dialog", "resize() ");
 //        if ((num + 1) >= 6) {
 //            setCanPlay(false);
 //            showANewDoubleButtonDialog();
@@ -233,6 +235,7 @@ public class AimScreen extends MyScreen {
 //            setCanPlay(true);
 //        }
         Boolean o = (Boolean) SPUtil.get(Contacts.FIRST, true);
+        Gdx.app.error("dialog", "resize() " + o);
         if (!o)
             getActivityOn();
 
@@ -246,54 +249,62 @@ public class AimScreen extends MyScreen {
     }
 
     private void getActivityOn() {
+        Gdx.app.error("dialog", Contacts.ACTIVY_ON);
+        if (mCustomDialog != null)
+            mCustomDialog.dismiss();
         NetUtil.getInstance().get(Contacts.ACTIVY_ON, new Net.HttpResponseListener() {
+
+
             //NetUtil.getInstance().get(Contacts.HOST + "1ff0788f5f9e965c51fd77f89666e214" + "&user_id=" + "" + "&type=10005", new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                String string = httpResponse.getResultAsString();
-                Gdx.app.error("dialog", string);
-                if (!"1".equals(string)) {
-                    androidLauncher.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            SPUtil.put(Contacts.ACTIVE, false);
-                            setCanPlay(false);
-                            showANewSingleButtonDialog();
-                        }
-                    });
-                } else {
-                    SPUtil.put(Contacts.ACTIVE, true);
-                    setCanPlay(true);
+                String result = httpResponse.getResultAsString();
+                Gdx.app.error("dialog", "handleHttpResponse   " + result);
+
+                if (!TextUtils.isEmpty(result)) {
+                    if (!"1".equals(result)) {
+                        androidLauncher.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showANewSingleButtonDialog();
+                            }
+                        });
+//                    Gdx.app.postRunnable(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            showANewSingleButtonDialog();
+//                        }
+//                    });
+                    }
                 }
             }
 
             @Override
             public void failed(Throwable t) {
-                SPUtil.put(Contacts.ACTIVE, false);
-                setCanPlay(false);
-                showANewSingleButtonDialog();
+                Gdx.app.error("dialog", t.getMessage());
             }
+
 
             @Override
             public void cancelled() {
-
+                Gdx.app.error("dialog", "cancelled()");
             }
         });
     }
 
     private void showANewSingleButtonDialog() {
-        final CustomDialog dialog = new CustomDialog(androidLauncher);
-        dialog.setContentVisiable(false);
-        dialog.setListener(new View.OnClickListener() {
+        mCustomDialog = new CustomDialog(androidLauncher);
+        mCustomDialog.setContentVisiable(false);
+        mCustomDialog.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setCanPlay(true);
-                Gdx.app.error("app", "setOnClickListener   " + dialog.isShowing());
+                Gdx.app.error("dialog", "setOnClickListener   " + mCustomDialog.isShowing());
             }
         });
-        dialog.setTitleText("优惠券已抢光，下次再来吧!");
-        dialog.setButtonText("知道了");
-        dialog.show();
+        mCustomDialog.setTitleText("优惠券已抢光，下次再来吧!");
+        mCustomDialog.setButtonText("知道了");
+        mCustomDialog.show();
     }
 
     @Override

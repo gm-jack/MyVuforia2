@@ -34,6 +34,7 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
     private AssetManager assetManager;
     private CloseActor mCloseActor;
     private boolean isFirst = true;
+    private boolean isFirstTouch = true;
 
 
     public MainScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
@@ -82,7 +83,9 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
 
     @Override
     public void show() {
-
+        if (myBeedActor != null) {
+            myBeedActor.setFirstTouch(true);
+        }
     }
 
     private void initListener() {
@@ -136,6 +139,33 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
         }
     }
 
+    //    private void showANewSingleButtonDialog() {
+//        final CustomDialog dialog = new CustomDialog(androidLauncher);
+//        dialog.setListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
+//        dialog.setTitleText("您未允许打开相机权限，无法进行扫描");
+//        dialog.setContentText("请前往设置-应用管理-" + getApplicationName() + "-权限中打开");
+//        dialog.setButtonText("确定");
+//        dialog.show();
+//    }
+//
+//    public String getApplicationName() {
+//        PackageManager packageManager = null;
+//        ApplicationInfo applicationInfo = null;
+//        try {
+//            packageManager = getApplicationContext().getPackageManager();
+//            applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            applicationInfo = null;
+//        }
+//        String applicationName =
+//                (String) packageManager.getApplicationLabel(applicationInfo);
+//        return applicationName;
+//    }
     @Override
     public void render(float delta) {
         if (mainStage == null)
@@ -158,14 +188,11 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
 
     @Override
     public void resume() {
-
-
 //        if (mGame != null && !isFirst) {
 //            group.removeActor(startActor);
 //            mGame.showLoadingScreen();
 //        }
 //        isFirst = false;
-        Log.e("imagetarget", "resultCode    ");
     }
 
     @Override

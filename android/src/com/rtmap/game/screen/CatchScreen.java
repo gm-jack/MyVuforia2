@@ -1,7 +1,7 @@
 package com.rtmap.game.screen;
 
-import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,6 +24,7 @@ import com.rtmap.game.interfaces.CatchOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.util.Contacts;
+import com.rtmap.game.util.CustomDialog;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
 
@@ -38,7 +39,7 @@ import java.util.TimerTask;
  */
 public class CatchScreen extends MyScreen {
 
-    private Context context;
+    private AndroidLauncher context;
     private CatActor catActor;
     private float deltaSum;
     private MyGame mGame;
@@ -211,8 +212,13 @@ public class CatchScreen extends MyScreen {
             backActor.setListener(new BackOnClickListener() {
                 @Override
                 public void onClick() {
-                    if (mGame != null)
-                        mGame.showAimScreen(true, true);
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mGame != null)
+                                mGame.showAimScreen(true, false);
+                        }
+                    });
                 }
             });
         if (beedActor != null)
@@ -235,13 +241,14 @@ public class CatchScreen extends MyScreen {
 
                 @Override
                 public void onSuccessClick() {
-                    mGame.stopCamera();
-                    Gdx.app.error("gdx", "onSuccessClick()");
-                    group3.removeActor(backActor);
-                    group3.removeActor(beedActor);
 
-                    Boolean isActive = (Boolean) SPUtil.get(Contacts.ACTIVE, true);
+                    Gdx.app.error("gdx", "onSuccessClick()");
+
+//                    Boolean isActive = (Boolean) SPUtil.get(Contacts.ACTIVE, true);
                     if (firstCatch) {
+                        mGame.stopCamera();
+                        group3.removeActor(backActor);
+                        group3.removeActor(beedActor);
                         catActor.removeListener();
                         catActor.setIsShow(false);
                         catchActor.setIsFirst(firstCatch);
@@ -251,13 +258,6 @@ public class CatchScreen extends MyScreen {
                         //引导
                         SPUtil.put(Contacts.FIRST, false);
 
-                    } else if (!isActive) {
-                        catActor.removeListener();
-                        catActor.setIsShow(false);
-                        catchActor.setNo(true);
-                        catchActor.setIsOpen(true);
-                        againActor.setIsShow(true);
-                        closeActor.setIsShow(true);
                     } else {
                         setResult();
                     }
@@ -285,13 +285,24 @@ public class CatchScreen extends MyScreen {
     }
 
     private void setResult() {
-        catActor.removeListener();
-        catActor.setIsShow(false);
         String phoneNumber = (String) SPUtil.get(Contacts.PHONE, "");
         if (TextUtils.isEmpty(phoneNumber)) {
-            fail();
             return;
         }
+        if (!NetUtil.getInstance().checkConnection(context)) {
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showNoInternet();
+                }
+            });
+            return;
+        }
+        mGame.stopCamera();
+        group3.removeActor(backActor);
+        group3.removeActor(beedActor);
+        catActor.removeListener();
+        catActor.setIsShow(false);
         Gdx.app.error("net", Contacts.WIN_NET + phoneNumber);
         NetUtil.getInstance().getConnection(Contacts.WIN_NET + phoneNumber, new NetUtil.HttpResponse() {
             @Override
@@ -337,13 +348,13 @@ public class CatchScreen extends MyScreen {
                         isWin = true;
                         catchActor.setIsWin(isWin);
                         catchActor.setData(result);
-                    } else if ("7".equals(result.getCode()) || "1".equals(result.getCode())|| "2".equals(result.getCode())) {
+                    } else if ("7".equals(result.getCode()) || "1".equals(result.getCode()) || "2".equals(result.getCode()) || "3".equals(result.getCode())) {
                         isWin = false;
                         catchActor.setNo(true);
-                    } else if ("4".equals(result.getCode())){
+                    } else if ("4".equals(result.getCode())) {
                         isWin = false;
                         catchActor.setGet(true);
-                    }else {
+                    } else {
                         isWin = false;
                         catchActor.setIsWin(isWin);
                     }
@@ -357,18 +368,33 @@ public class CatchScreen extends MyScreen {
 
             @Override
             public void responseFail() {
-                fail();
+
             }
         });
     }
 
-    private void fail() {
-        isWin = false;
-        catchActor.setNo(true);
-        catchActor.setIsOpen(true);
-        againActor.setIsShow(!isWin);
-        closeActor.setIsShow(true);
+    private void showNoInternet() {
+        final CustomDialog dialog = new CustomDialog(context);
+        dialog.setContentVisiable(true);
+        dialog.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gdx.app.error("dialog", "catch  setOnClickListener   " + dialog.isShowing());
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mGame != null)
+                            mGame.showAimScreen(true, false);
+                    }
+                });
+            }
+        });
+        dialog.setTitleText("提示");
+        dialog.setContentText("无法连接网络，请检查网络设置");
+        dialog.setButtonText("确定");
+        dialog.show();
     }
+
 
     @Override
     public void render(float delta) {

@@ -88,8 +88,7 @@ public class CatActor extends Actor {
                     if (isCatch && isCatchFirst) {
                         isCatchFirst = false;
                         catchOnClickListener.onCatchClick();
-                    } else if (!isCatch && isOpenFirst) {
-                        isOpenFirst = false;
+                    } else if (!isCatch) {
                         catchOnClickListener.onSuccessClick();
                     }
                 }

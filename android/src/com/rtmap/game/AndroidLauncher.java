@@ -17,7 +17,6 @@ import com.rtmap.game.camera.AndroidDeviceCameraController;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.SPUtil;
 import com.rtmap.gm.myvuforia.ImageTargets.ImageTargets;
-import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.SoftReference;
 
@@ -70,8 +69,8 @@ public class AndroidLauncher extends AndroidApplication {
 
         //设置日志等级
         Gdx.app.setLogLevel(LOG_NONE);
-        MobclickAgent.setCatchUncaughtExceptions(true);
-        MobclickAgent.setDebugMode( true );
+//        MobclickAgent.setCatchUncaughtExceptions(true);
+//        MobclickAgent.setDebugMode( true );
         if (graphics.getView() instanceof SurfaceView) {
             SurfaceView glView = (SurfaceView) graphics.getView();
             glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -106,7 +105,7 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
     }
 
     @Override
@@ -114,7 +113,7 @@ public class AndroidLauncher extends AndroidApplication {
 //        if (androidDeviceCameraController != null) {
 //            androidDeviceCameraController.stopPreviewAsync();
 //        }
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
         super.onPause();
 
     }

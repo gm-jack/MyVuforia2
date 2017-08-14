@@ -43,6 +43,7 @@ public class MyGame extends Game {
     private ScreenViewport mViewport;
     private boolean cameraShow = false;
     private boolean mToggle;
+    private BeedScreen mBeedScreen;
 
     public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController, AssetManager asset) {
         this.androidLauncher = androidLauncher;
@@ -125,11 +126,13 @@ public class MyGame extends Game {
     }
 
     public void showMainScreen() {
+        stopCamera();
         if (mode != normal_Mode)
             mode = normal_Mode;
+//        mBeedScreen = new BeedScreen(this, androidLauncher, mViewport);
         mainScreen = new MainScreen(this, androidLauncher, mViewport);
         setScreen(mainScreen);
-        stopCamera();
+
     }
 
     public void showOldScreen() {

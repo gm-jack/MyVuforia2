@@ -29,6 +29,7 @@ public class BackActor extends Actor {
     private boolean isFirst = true;
     private TextureRegion mScaleTex;
     private float scale;
+    private boolean isFirstTouch = true;
 
     public BackActor(AssetManager assetManager) {
         super();
@@ -69,7 +70,8 @@ public class BackActor extends Actor {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = false;
-                if (backOnClickListener != null && isVisible()) {
+                if (backOnClickListener != null && isFirstTouch) {
+                    isFirstTouch = false;
                     backOnClickListener.onClick();
                 }
             }

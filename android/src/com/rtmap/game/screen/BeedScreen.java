@@ -72,6 +72,8 @@ public class BeedScreen extends MyScreen {
         }
     };
     private UseRuleActor mUseRuleActor;
+    private CustomDialog mDialog;
+    private boolean isShow = false;
     //    private ToastActor mActor;
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
@@ -108,7 +110,6 @@ public class BeedScreen extends MyScreen {
 
         beedStage.addActor(group);
 
-        getData();
     }
 
     private void initResouce() {
@@ -322,7 +323,7 @@ public class BeedScreen extends MyScreen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.error("list", "resize");
-
+        getData();
         initListener();
     }
 
@@ -332,9 +333,22 @@ public class BeedScreen extends MyScreen {
             return;
         }
         Gdx.app.error("net", Contacts.LIST_NET + phoneNumber);
+        if (!NetUtil.getInstance().checkConnection(androidLauncher) && !isShow) {
+            androidLauncher.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    isShow = true;
+                    showNoInternet();
+                }
+            });
+
+            return;
+        }
+        Gdx.app.error("net", Contacts.LIST_NET + phoneNumber);
         NetUtil.getInstance().get(Contacts.LIST_NET + phoneNumber, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                Gdx.app.error("http", "handleHttpResponse()");
                 String resultAsString = httpResponse.getResultAsString();
 //                showToast(resultAsString);
                 List<Result> lists = new ArrayList<Result>();
@@ -399,6 +413,22 @@ public class BeedScreen extends MyScreen {
         });
     }
 
+    private void showNoInternet() {
+        if (mDialog == null)
+            mDialog = new CustomDialog(androidLauncher);
+        mDialog.setContentVisiable(true);
+        mDialog.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isShow = false;
+                Gdx.app.error("app", "setOnClickListener   " + mDialog.isShowing());
+            }
+        });
+        mDialog.setTitleText("提示");
+        mDialog.setContentText("无法连接网络，请检查网络设置");
+        mDialog.setButtonText("确定");
+        mDialog.show();
+    }
 //    private void showToast(String message) {
 //        Gdx.app.error("toast", "show");
 //        if (mActor == null)
@@ -419,6 +449,9 @@ public class BeedScreen extends MyScreen {
 
     @Override
     public void hide() {
+        if (beedStage != null) {
+            beedStage.dispose();
+        }
     }
 
     @Override

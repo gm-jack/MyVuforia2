@@ -24,6 +24,7 @@ public class MyBeedActor extends Actor {
     private float scale = 1;
     private TextureRegion backGround;
     private boolean isFirst = true;
+    private boolean isFirstTouch = true;
 
     public MyBeedActor(AssetManager assetManager) {
         super();
@@ -42,7 +43,9 @@ public class MyBeedActor extends Actor {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (startOnClickListener != null) {
+                if (startOnClickListener != null && isFirstTouch) {
+                    isFirstTouch = false;
+
                     startOnClickListener.onClick();
                 }
             }
@@ -50,6 +53,10 @@ public class MyBeedActor extends Actor {
         addListener(listener);
     }
 
+
+    public void setFirstTouch(boolean firstTouch) {
+        isFirstTouch = firstTouch;
+    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {

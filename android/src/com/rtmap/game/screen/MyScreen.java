@@ -110,10 +110,16 @@ public abstract class MyScreen implements Screen {
     private float mOffsetY;
     private boolean isY;
     private boolean mB;
-    private int mMin = -6;
-    private int mMax = 6;
+    private int mMin = -7;
+    private int mMax = 7;
     private boolean isX;
     private Vector3 mVector3;
+    private float mOffsetX;
+    private float mTranX;
+    private float mTranY;
+    private int count = 0;
+    private double mChangeX;
+    private double mChangeY;
 
     public MyScreen() {
 
@@ -145,7 +151,7 @@ public abstract class MyScreen implements Screen {
         camera = new MagicCamera(67f, width, height);
         camera.translate(0, 0, 0);
         camera.lookAt(0, 0, 14);
-        camera.far = 500.0f;
+        camera.far = 600.0f;
         camera.near = 1f;
 
     }
@@ -186,7 +192,9 @@ public abstract class MyScreen implements Screen {
 //        if (rds) {
 //            j = -j;
 //        }
-        shipInstancePao.transform.setToTranslation(0, 0, 14);
+        float x = (float) (-12 * Math.random() + 6);
+        float y = (float) (-12 * Math.random() + 6);
+        shipInstancePao.transform.setToTranslation(x, y, 14);
 //        mQuadrant = getQuadrant(i, j);
 
         //        Take 001
@@ -434,81 +442,93 @@ public abstract class MyScreen implements Screen {
             instances.get(modelNumber).transform.getTranslation(translate);
             //线性移动
             if (isTranslate && modelNumber != ZUO) {
-                setDuration(3);
-                if (time > 0.02) {
-                    old = translate;
-                    float offsetX = mVector3.x - old.x;
-                    float offsetY = mVector3.y - old.y;
-
-//                    if (isX) {
-//                        offsetX = old.x;
-//                    } else {
-//                        if (isTrans) {
-//                            if (offsetX <= mMin) {
-//                                isTrans = false;
-//                                isX = Math.random() >= 0.5;
-////                            isX = isTrans;
-////                            isTrans = Math.random() >= 0.5;
-////                            if (isTrans == isX) {
-////                                isTrans = !isX;
-////                            }
-//                            }
-//                            offsetX = old.x - 0.1f;
-//                        } else {
-//                            if (offsetX >= mMax) {
-//                                isTrans = true;
-//                                if (isY) {
-//                                    isY = false;
-//                                }
-////                            isX = isTrans;
-////                            isTrans = Math.random() >= 0.5;
-////                            if (isTrans == isX) {
-////                                isTrans = !isX;
-////                            }
-//                            }
-//                            offsetX = old.x + 0.1f;
-//                        }
-//                    }
-//                    if (isY) {
-//                        mOffsetY = old.y;
-//                    } else {
-//                        if (mB) {
-//                            if (mOffsetY >= mMax) {
-//                                mB = false;
-////                            isY = mB;
-////                            mB = Math.random() >= 0.5;
-////                            if (mB == isY) {
-////                                mB = !isY;
-////                            }
-//                                isY = Math.random() >= 0.5;
-//                            }
-//
-//                            mOffsetY = old.y + 0.1f;
-//                        } else {
-//                            if (mOffsetY <= mMin) {
-//                                mB = true;
-////                            isY = mB;
-//                                if (isX) {
-//                                    isX = false;
-//                                }
-////                            if (mB == isY) {
-////                                mB = !isY;
-////                            }
-//                            }
-//                            mOffsetY = old.y - 0.1f;
-//                        }
-//                    }
-                    Gdx.app.error("random", "offsetX   " + offsetX + "   mOffsetY   " + mOffsetY);
-                    float offsetZ = old.z;
-                    if (offsetX != old.x || mOffsetY != old.y) {
-                        this.now = new Vector3(offsetX, mOffsetY, offsetZ);
-                        instances.get(modelNumber).transform.setToTranslation(now);
-                        getModelAngle();
+                setDuration();
+                if (!isTrans) {
+                    if (time >= 0.01) {
+                        if (mTranX <= mMin) {
+                            isTrans = true;
+                        }
+                        if (mTranX >= mMax) {
+                            isTrans = true;
+                        }
+                        if (mTranY <= mMin) {
+                            isTrans = true;
+                        }
+                        if (mTranY >= mMax) {
+                            isTrans = true;
+                        }
+                        mTranX += (float) mChangeX;
+                        mTranY += (float) mChangeY;
+                        //                    if (isX) {
+                        //                        offsetX = old.x;
+                        //                    } else {
+                        //                        if (isTrans) {
+                        //                            if (offsetX <= mMin) {
+                        //                                isTrans = false;
+                        //                                isX = Math.random() >= 0.5;
+                        ////                            isX = isTrans;
+                        ////                            isTrans = Math.random() >= 0.5;
+                        ////                            if (isTrans == isX) {
+                        ////                                isTrans = !isX;
+                        ////                            }
+                        //                            }
+                        //                            offsetX = old.x - 0.08f;
+                        //                        } else {
+                        //                            if (offsetX >= mMax) {
+                        //                                isTrans = true;
+                        //                                if (isY) {
+                        //                                    isY = false;
+                        //                                }
+                        ////                            isX = isTrans;
+                        ////                            isTrans = Math.random() >= 0.5;
+                        ////                            if (isTrans == isX) {
+                        ////                                isTrans = !isX;
+                        ////                            }
+                        //                            }
+                        //                            offsetX = old.x + 0.08f;
+                        //                        }
+                        //                    }
+                        //                    if (isY) {
+                        //                        mOffsetY = old.y;
+                        //                    } else {
+                        //                        if (mB) {
+                        //                            if (mOffsetY >= mMax) {
+                        //                                mB = false;
+                        ////                            isY = mB;
+                        ////                            mB = Math.random() >= 0.5;
+                        ////                            if (mB == isY) {
+                        ////                                mB = !isY;
+                        ////                            }
+                        //                                isY = Math.random() >= 0.5;
+                        //                            }
+                        //
+                        //                            mOffsetY = old.y + 0.08f;
+                        //                        } else {
+                        //                            if (mOffsetY <= mMin) {
+                        //                                mB = true;
+                        ////                            isY = mB;
+                        //                                if (isX) {
+                        //                                    isX = false;
+                        //                                }
+                        ////                            if (mB == isY) {
+                        ////                                mB = !isY;
+                        ////                            }
+                        //                            }
+                        //                            mOffsetY = old.y - 0.08f;
+                        //                        }
+                        //                    }
+                        Gdx.app.error("random", "offsetX   " + mTranX + "   mOffsetY   " + mTranY);
+                        float offsetZ = old.z;
+                        if (mTranX != old.x || mTranY != old.y) {
+                            this.now = new Vector3(mTranX, mTranY, offsetZ);
+                            instances.get(modelNumber).transform.setToTranslation(now);
+                            getModelAngle();
+                        }
+                        Gdx.app.error("translate", "当前坐标  translate.x  " + translate.x + "  translate.y  " + translate.y + "  translate.z  " + translate.z);
+                        time = 0;
+                    } else {
+                        time += Gdx.graphics.getDeltaTime();
                     }
-                    Gdx.app.error("translate", "当前坐标  translate.x  " + translate.x + "  translate.y  " + translate.y + "  translate.z  " + translate.z);
-                    time = 0;
-                } else {
-                    time += Gdx.graphics.getDeltaTime();
                 }
             }
 
@@ -537,11 +557,30 @@ public abstract class MyScreen implements Screen {
         }
     }
 
-    private void setDuration(int i) {
+    private void setDuration() {
         if (isTrans) {
+            old = translate;
+
             double x = -12 * Math.random() + 6;
             double y = -12 * Math.random() + 6;
+//            if (x > 0) {
+//                x = -old.x;
+//            } else if (y < 0) {
+//                y = old.y;
+//            }
             mVector3 = new Vector3((float) x, (float) y, translate.z);
+
+            mOffsetX = mVector3.x - old.x;
+            mOffsetY = mVector3.y - old.y;
+
+            mChangeX = mOffsetX / 1 * 0.01;
+            mChangeY = mOffsetY / 1 * 0.01;
+
+            mTranX = old.x;
+            mTranY = old.y;
+            count = 0;
+
+            isTrans = false;
         }
     }
 

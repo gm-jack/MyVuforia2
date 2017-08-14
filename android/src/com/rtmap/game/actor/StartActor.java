@@ -24,6 +24,7 @@ public class StartActor extends Actor {
     private float scale = 1;
     private TextureRegion backGround;
     private boolean isFirst = true;
+    private boolean isFirstTouch = true;
 
     public StartActor(AssetManager assetManager) {
         super();

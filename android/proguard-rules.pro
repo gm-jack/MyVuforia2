@@ -35,7 +35,6 @@
 -keep class com.badlogic.gdx.controllers.android.AndroidControllers
 -keep class com.badlogic.gdx.backends.android.AndroidApplication
 -keep class com.rtmap.game.AndroidLauncher
--keep class com.rtmap.gm.myvuforia.ImageTargets.ImageTargets
 
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
    <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);
@@ -53,19 +52,3 @@
 
 #  native-font
 -keep class com.rtmap.game.text.** { *; }
--keep class com.rtmap.game.interfaces.** { *; }
--keep class com.rtmap.game.util.** { *; }
-
-### ----------------------------------
-###   ########## Gson混淆    ##########
-### ----------------------------------
-#-keepattributes Signature-keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.** { *; }
--keep class com.rtm.gf.model.** { *; }
--keepattributes Signature
-
-#友盟
--keepclassmembers class * {
-   public <init> (org.json.JSONObject);
-}

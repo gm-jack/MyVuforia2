@@ -2,10 +2,8 @@ package com.rtmap.gm.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.rtmap.game.AndroidLauncher;
-import com.rtmap.game.util.ZXingUtil;
 
 public class MainActivity extends Activity {
     private EditText et;
@@ -43,11 +40,6 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-        final Bitmap bitmap = Bitmap.createBitmap(300, 300,
-                Bitmap.Config.ARGB_8888);
-        ZXingUtil.createQr("111111111", 300, 300, bitmap);
-        Log.e("fail", (bitmap == null) + "");
-        iv.setImageBitmap(bitmap);
     }
 
     @Override
