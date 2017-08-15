@@ -21,11 +21,6 @@ www-test/
 .gwt-tmp/
 
 ## Android Studio and Intellij and Android in general
-android/libs/armeabi/
-android/libs/armeabi-v7a/
-android/libs/arm64-v8a/
-android/libs/x86/
-android/libs/x86_64/
 android/gen/
 .idea/
 *.ipr
@@ -34,88 +29,9 @@ android/gen/
 out/
 com_crashlytics_export_strings.xml
 
-## Eclipse
-.classpath
-.project
-.metadata
-**/bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.settings/
-.loadpath
-.externalToolBuilders/
-*.launch
-
-## NetBeans
-**/nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-nbactions.xml
-nb-configuration.xml
-
 ## Gradle
 
 .gradle
 gradle-app.setting
 build/
 
-## OS Specific
-.DS_Store
-Thumbs.db
-android/assets/again_again.png
-android/assets/catch_first.png
-android/assets/catch_get.png
-android/assets/catch_no.png
-android/assets/find_tip1.png
-android/assets/tiger.zip
-android/assets/tiger/hongbao.png
-android/assets/tiger/red2.g3dj
-android/assets/use.png
-android/res/drawable/
-android/res/layout/
-android/src/com/rtmap/game/actor/UseRuleActor.java
-android/src/com/rtmap/game/interfaces/LoadCompleteListener.java
-android/src/com/rtmap/game/util/CustomDialog.java
-android/src/com/rtmap/game/util/ZXingUtil.java
-myvuforia2/libs/
-myvuforia2/src/main/java/com/rtmap/gm/myapplication/MyApplication.java
-myvuforia2/src/main/java/com/rtmap/gm/myapplication/SPUtil.java
-myvuforia2/src/main/res/drawable/
-vuforia/.gitignore
-vuforia/build.gradle
-vuforia/libs/
-vuforia/proguard-rules.pro
-vuforia/src/androidTest/
-vuforia/src/main/AndroidManifest.xml
-vuforia/src/main/assets/
-vuforia/src/main/java/com/rtmap/gm/myvuforia/ImageTargets/ImageTargetRenderer.java
-vuforia/src/main/java/com/rtmap/gm/myvuforia/ImageTargets/ImageTargets.java
-vuforia/src/main/java/com/rtmap/gm/myvuforia/ImageTargets/OnTargetListener.java
-vuforia/src/main/java/com/rtmap/gm/myvuforia/SampleApplication/
-vuforia/src/main/jniLibs/
-vuforia/src/main/res/layout/camera_overlay.xml
-vuforia/src/main/res/mipmap-xxhdpi/
-vuforia/src/main/res/values/
-vuforia/src/test/
-.gitignore
-build.gradle
-libs/
-proguard-rules.pro
-src/androidTest/
-src/main/AndroidManifest.xml
-src/main/assets/
-src/main/java/com/rtmap/gm/myvuforia/ImageTargets/ImageTargetRenderer.java
-src/main/java/com/rtmap/gm/myvuforia/ImageTargets/ImageTargets.java
-src/main/java/com/rtmap/gm/myvuforia/ImageTargets/OnTargetListener.java
-src/main/java/com/rtmap/gm/myvuforia/SampleApplication/
-src/main/jniLibs/
-src/main/res/layout/camera_overlay.xml
-src/main/res/mipmap-xxhdpi/
-src/main/res/values/
-src/test/
