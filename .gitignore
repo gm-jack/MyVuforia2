@@ -34,4 +34,5 @@ com_crashlytics_export_strings.xml
 .gradle
 gradle-app.setting
 build/
+local.properties
 

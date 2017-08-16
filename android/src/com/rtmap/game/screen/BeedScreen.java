@@ -350,6 +350,8 @@ public class BeedScreen extends MyScreen {
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 Gdx.app.error("http", "handleHttpResponse()");
                 String resultAsString = httpResponse.getResultAsString();
+                if (TextUtils.isEmpty(resultAsString))
+                    return;
 //                showToast(resultAsString);
                 List<Result> lists = new ArrayList<Result>();
                 try {

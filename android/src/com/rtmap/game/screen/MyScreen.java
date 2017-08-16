@@ -441,7 +441,7 @@ public abstract class MyScreen implements Screen {
 
             instances.get(modelNumber).transform.getTranslation(translate);
             //线性移动
-            if (isTranslate && modelNumber != ZUO) {
+            if (isTranslate && modelNumber != ZUO && isCanPlay) {
                 setDuration();
                 if (!isTrans) {
                     if (time >= 0.01) {

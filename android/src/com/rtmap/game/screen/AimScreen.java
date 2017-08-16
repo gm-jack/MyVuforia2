@@ -17,12 +17,18 @@ import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.interfaces.CatchListener;
+import com.rtmap.game.model.SurplusBean;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.CustomDialog;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 /**
@@ -44,6 +50,7 @@ public class AimScreen extends MyScreen {
     private boolean isAim = false;
     private boolean isAnimation = true;
     private CustomDialog mCustomDialog;
+    private int mSum = 0;
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
@@ -262,6 +269,7 @@ public class AimScreen extends MyScreen {
                 Gdx.app.error("dialog", "handleHttpResponse   " + result);
 
                 if (!TextUtils.isEmpty(result)) {
+
                     if (!"1".equals(result)) {
                         androidLauncher.runOnUiThread(new Runnable() {
                             @Override
@@ -269,12 +277,63 @@ public class AimScreen extends MyScreen {
                                 showANewSingleButtonDialog();
                             }
                         });
-//                    Gdx.app.postRunnable(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            showANewSingleButtonDialog();
-//                        }
-//                    });
+//
+                    } else {
+                        mSum = 0;
+                        NetUtil.getInstance().get(Contacts.SURPLUS_COUNT, new Net.HttpResponseListener() {
+                            @Override
+                            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                                String result = httpResponse.getResultAsString();
+                                Gdx.app.error("dialog", "handleHttpResponse   " + result);
+                                try {
+                                    JSONObject object = new JSONObject(result);
+                                    SurplusBean surplusBean = new SurplusBean();
+
+                                    surplusBean.setStatus(object.optInt("status"));
+                                    surplusBean.setMessage(object.optString("message"));
+
+                                    JSONArray data = object.optJSONArray("data");
+                                    List<SurplusBean.DataBean> dataList = new ArrayList<SurplusBean.DataBean>();
+
+                                    for (int i = 0; i < data.length(); i++) {
+                                        SurplusBean.DataBean bean = new SurplusBean.DataBean();
+                                        JSONObject dataJSONObject = data.getJSONObject(i);
+                                        bean.setId(dataJSONObject.optInt("id"));
+                                        bean.setIssue(dataJSONObject.optInt("issue"));
+                                        bean.setNum(dataJSONObject.optInt("num"));
+                                        int count = dataJSONObject.optInt("surplus_count");
+                                        if (count != 0) {
+                                            mSum++;
+                                        }
+                                        bean.setSurplusCount(count);
+                                        dataList.add(bean);
+                                    }
+                                    surplusBean.setData(dataList);
+
+                                    if (mSum == 0) {
+                                        androidLauncher.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                showANewSingleButtonDialog();
+                                            }
+                                        });
+                                    }
+                                } catch (Exception e) {
+                                    Gdx.app.error("dialog", e.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void failed(Throwable t) {
+                                Gdx.app.error("dialog", t.getMessage());
+                            }
+
+
+                            @Override
+                            public void cancelled() {
+                                Gdx.app.error("dialog", "cancelled()");
+                            }
+                        });
                     }
                 }
             }

@@ -183,9 +183,9 @@ public class CatchActor extends Actor {
                 }
                 if (!isStop) {
                     if (changeRadiu < maxRadius) {
-                        num = 50;
+                        num = 70;
                     } else {
-                        num = 80;
+                        num = 100;
                     }
                     radius = height * 2 / 5 / num;
                     changeRadiu += radius;
@@ -220,9 +220,9 @@ public class CatchActor extends Actor {
                         }
                     } else {
                         if (changeRadiu < maxRadius) {
-                            num = 50;
+                            num = 70;
                         } else {
-                            num = 80;
+                            num = 100;
                         }
                         radius = height * 2 / 5 / num;
                         changeRadiu -= radius;
