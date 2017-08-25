@@ -70,7 +70,7 @@ public class AndroidLauncher extends AndroidApplication {
         //设置日志等级
         Gdx.app.setLogLevel(LOG_NONE);
 //        MobclickAgent.setCatchUncaughtExceptions(true);
-//        MobclickAgent.setDebugMode( true );
+//        MobclickAgent.setDebugMode(true);
         if (graphics.getView() instanceof SurfaceView) {
             SurfaceView glView = (SurfaceView) graphics.getView();
             glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -78,8 +78,6 @@ public class AndroidLauncher extends AndroidApplication {
         graphics.getView().setKeepScreenOn(true);
         origWidth = graphics.getWidth();
         origHeight = graphics.getHeight();
-
-
     }
 
     public void post(Runnable r) {
@@ -110,12 +108,8 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override
     protected void onPause() {
-//        if (androidDeviceCameraController != null) {
-//            androidDeviceCameraController.stopPreviewAsync();
-//        }
 //        MobclickAgent.onPause(this);
         super.onPause();
-
     }
 
     @Override

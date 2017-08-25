@@ -97,6 +97,7 @@ public class MainScreen extends MyScreen implements AndroidEventListener {
 //                    if (mGame != null) {
 //                        mGame.showLoadingScreen();
 //                    }
+//                    Integer.parseInt("adads");
                     if (isFirst) {
                         isFirst = false;
                         androidLauncher.start();

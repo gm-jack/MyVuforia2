@@ -152,8 +152,8 @@ public class NetUtil {
      * @param url
      * @return
      */
-    public void get(String url, Net.HttpResponseListener responseListener) {
-        Net.HttpRequest httpRequest = requestBuilder.newRequest().header("Content-Type",
+    public synchronized void get(String url, Net.HttpResponseListener responseListener) {
+        Net.HttpRequest httpRequest = requestBuilder.newRequest().timeout(5000).header("Content-Type",
                 "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url(url).build();
         Gdx.net.sendHttpRequest(httpRequest, responseListener);
     }

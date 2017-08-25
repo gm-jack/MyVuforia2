@@ -6,9 +6,9 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.rtmap.game.AndroidLauncher;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 public class NativeFontAndroid implements NativeFontListener {
     private HashMap<String, Typeface> fontFaces = new HashMap<String, Typeface>();
-    private AndroidApplication androidApplication = (AndroidApplication) Gdx.app;
     @Override
     public Pixmap getFontPixmap(String txt, NativeFontPaint vpaint) {
         Paint paint = new Paint();
@@ -29,7 +28,7 @@ public class NativeFontAndroid implements NativeFontListener {
             Gdx.app.log("app",Gdx.files.internal(vpaint.getTTFName()
                     + (vpaint.getTTFName().endsWith(".ttf") ? ""
                     : ".ttf")).file().getPath());
-            Typeface fontFace = Typeface.createFromAsset(androidApplication.getAssets(),vpaint.getTTFName()
+            Typeface fontFace = Typeface.createFromAsset(AndroidLauncher.getInstance().getAssets(),vpaint.getTTFName()
                     + (vpaint.getTTFName().endsWith(".ttf") ? ""
                     : ".ttf"));
             fontFaces.put(vpaint.getTTFName(), fontFace);

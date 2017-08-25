@@ -90,8 +90,16 @@ public class MyGame extends Game {
     }
 
     @Override
+    public void resume() {
+        super.resume();
+        if (mode != normal_Mode)
+            mode = normal_Mode;
+    }
+
+    @Override
     public void pause() {
         super.pause();
+        stopCamera();
     }
 
     public void stopCamera(boolean cameraShow) {
@@ -111,6 +119,7 @@ public class MyGame extends Game {
 
     @Override
     public void dispose() {
+        stopCamera();
         for (int i = 0; i < screenList.size(); i++) {
             Screen screen = screenList.get(i);
             if (screen != null) {

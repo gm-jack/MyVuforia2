@@ -58,7 +58,7 @@ public class CustomDialog extends Dialog {
     }
 
     private void init() {
-        View inflate = mLayoutInflater.inflate(R.layout.dialog_rule, null);
+        View inflate = mLayoutInflater.inflate(R.layout.dialog, null);
         tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
         tvContent = (TextView) inflate.findViewById(R.id.tv_content);
         tvOk = (TextView) inflate.findViewById(R.id.tv_ok);

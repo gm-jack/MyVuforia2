@@ -38,6 +38,8 @@ public class MyBeedActor extends Actor {
         listener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isFirstTouch = true;
+                Gdx.app.error("beed", "touchDown()");
                 return true;
             }
 
@@ -45,7 +47,7 @@ public class MyBeedActor extends Actor {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (startOnClickListener != null && isFirstTouch) {
                     isFirstTouch = false;
-
+                    Gdx.app.error("beed", "touchUp()");
                     startOnClickListener.onClick();
                 }
             }
@@ -66,7 +68,7 @@ public class MyBeedActor extends Actor {
         }
         if (assetManager.update() && isFirst) {
             initResouces();
-            Gdx.app.error("start", "regionWidth  = " + regionWidth + "  regionHeight=  " + regionHeight);
+
             isFirst = false;
         }
 

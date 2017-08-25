@@ -3,7 +3,6 @@ package com.rtmap.game.screen;
 
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -73,7 +72,7 @@ public class BeedScreen extends MyScreen {
     };
     private UseRuleActor mUseRuleActor;
     private CustomDialog mDialog;
-    private boolean isShow = false;
+    private boolean isFirst = true;
     //    private ToastActor mActor;
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
@@ -238,12 +237,11 @@ public class BeedScreen extends MyScreen {
         }
     }
 
-    private TextView tvTitle;
-    private TextView tvContent;
-    private TextView tvOk;
-
     private void showANewSingleButtonDialog() {
         final CustomDialog dialog = new CustomDialog(androidLauncher);
+        dialog.setContentVisiable(false);
+        dialog.setImageContentVisiable(true);
+        dialog.setTitleVisiable(false);
         dialog.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,59 +249,6 @@ public class BeedScreen extends MyScreen {
             }
         });
         dialog.show();
-
-//        GDXButtonDialog dialogs = mDManager.newDialog(GDXButtonDialog.class);
-//        dialogs.setTitle("使用规则");
-//        dialogs.addButton("确定");
-//        dialogs.setClickListener(new ButtonClickListener() {
-//            @Override
-//            public void click(int button) {
-//
-//            }
-//        });
-
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(androidLauncher, R.style.dialog);
-//        View inflate = View.inflate(androidLauncher, R.layout.dialog_rule, null);
-//        tvTitle = (TextView) inflate.findViewById(R.id.tv_title);
-//        tvContent = (TextView) inflate.findViewById(R.id.tv_content);
-//        tvOk = (TextView) inflate.findViewById(R.id.tv_ok);
-//        Gdx.app.error("app", "requestFocus   " + inflate.requestFocus());
-//
-//        tvOk.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                androidLauncher.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (isBuild) {
-//                            isBuild = false;
-//                            WindowManager manager = androidLauncher.getWindowManager();
-//                            manager.removeViewImmediate(mAlertDialog.getWindow().getDecorView());
-//                            addListeners();
-//                            Gdx.app.error("app", "setOnClickListener   " + mAlertDialog.isShowing());
-//                        }
-//                    }
-//                });
-//
-//            }
-//        });
-//        builder.setView(inflate);
-//        builder.setCancelable(false);
-//        if (!isBuild) {
-//            mAlertDialog = builder.create();
-//            mAlertDialog.setView(inflate, 0, 0, 0, 0);
-//
-//            mAlertDialog.getWindow().setBackgroundDrawableResource(R.drawable.shape);
-////            androidLauncher.runOnUiThread(new Runnable() {
-////                @Override
-////                public void run() {
-//            mAlertDialog.show();
-//            isBuild = true;
-////                }
-////            });
-//        }
-
-
     }
 
     @Override
@@ -322,9 +267,12 @@ public class BeedScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.error("list", "resize");
-        getData();
-        initListener();
+        if (isFirst) {
+            Gdx.app.error("list", "resize");
+            isFirst = false;
+            getData();
+            initListener();
+        }
     }
 
     private void getData() {
@@ -333,25 +281,24 @@ public class BeedScreen extends MyScreen {
             return;
         }
         Gdx.app.error("net", Contacts.LIST_NET + phoneNumber);
-        if (!NetUtil.getInstance().checkConnection(androidLauncher) && !isShow) {
+        if (!NetUtil.getInstance().checkConnection(androidLauncher)) {
             androidLauncher.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    isShow = true;
                     showNoInternet();
                 }
             });
-
             return;
         }
         Gdx.app.error("net", Contacts.LIST_NET + phoneNumber);
         NetUtil.getInstance().get(Contacts.LIST_NET + phoneNumber, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                Gdx.app.error("http", "handleHttpResponse()");
                 String resultAsString = httpResponse.getResultAsString();
-                if (TextUtils.isEmpty(resultAsString))
+                Gdx.app.error("http", "handleHttpResponse()  " + resultAsString);
+                if (TextUtils.isEmpty(resultAsString)) {
                     return;
+                }
 //                showToast(resultAsString);
                 List<Result> lists = new ArrayList<Result>();
                 try {
@@ -419,10 +366,11 @@ public class BeedScreen extends MyScreen {
         if (mDialog == null)
             mDialog = new CustomDialog(androidLauncher);
         mDialog.setContentVisiable(true);
+        mDialog.setTitleVisiable(true);
+        mDialog.setImageContentVisiable(false);
         mDialog.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isShow = false;
                 Gdx.app.error("app", "setOnClickListener   " + mDialog.isShowing());
             }
         });
@@ -431,13 +379,6 @@ public class BeedScreen extends MyScreen {
         mDialog.setButtonText("确定");
         mDialog.show();
     }
-//    private void showToast(String message) {
-//        Gdx.app.error("toast", "show");
-//        if (mActor == null)
-//            mActor = new ToastActor();
-//        group.addActor(mActor);
-//        mActor.setIsShow(true, message);
-//    }
 
     @Override
     public void pause() {

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -298,16 +299,21 @@ public class CatchScreen extends MyScreen {
             });
             return;
         }
-        mGame.stopCamera();
-        group3.removeActor(backActor);
-        group3.removeActor(beedActor);
         catActor.removeListener();
         catActor.setIsShow(false);
         Gdx.app.error("net", Contacts.WIN_NET + phoneNumber);
-        NetUtil.getInstance().getConnection(Contacts.WIN_NET + phoneNumber, new NetUtil.HttpResponse() {
+        NetUtil.getInstance().get(Contacts.WIN_NET + phoneNumber, new Net.HttpResponseListener() {
             @Override
-            public void responseString(String response) {
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String response = httpResponse.getResultAsString();
+                if(TextUtils.isEmpty(response)){
+                    return;
+                }
+                mGame.stopCamera();
+                group3.removeActor(backActor);
+                group3.removeActor(beedActor);
 
+                Gdx.app.error("result", "" + response);
                 try {
                     Result result = new Result();
                     JSONObject object = new JSONObject(response);
@@ -362,13 +368,18 @@ public class CatchScreen extends MyScreen {
                     againActor.setIsShow(!isWin);
                     closeActor.setIsShow(true);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Gdx.app.error("result", "" + e.getMessage());
                 }
             }
 
             @Override
-            public void responseFail() {
+            public void failed(Throwable t) {
+                Gdx.app.error("result", "" + t.getMessage());
+            }
 
+            @Override
+            public void cancelled() {
+                Gdx.app.error("result", "cancelled()");
             }
         });
     }
@@ -376,6 +387,8 @@ public class CatchScreen extends MyScreen {
     private void showNoInternet() {
         final CustomDialog dialog = new CustomDialog(context);
         dialog.setContentVisiable(true);
+        dialog.setTitleVisiable(true);
+        dialog.setImageContentVisiable(false);
         dialog.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

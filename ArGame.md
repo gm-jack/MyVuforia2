@@ -1,18 +1,18 @@
 ##项目配置
-###1.	Project的build.gradle配置
+###1.Project的build.gradle配置
 只需要配置
 <pre><code>
 allprojects {
-       ext {
+    ext {
         gdxVersion = '1.9.5'
 	}
 	repositories {
-    		jcenter()
+    	jcenter()
    		mavenCentral()
-        }
+    }
 }
 </code></pre>
-###2.	Module的build.gradle配置
+###2.Module的build.gradle配置
 需要更新一些库，最好翻墙gradle自动下载
 <pre><code>
 android {
@@ -37,6 +37,9 @@ android {
 }
 
 dependencies {
+    //友盟测试SDK时添加
+    //compile 'com.umeng.analytics:analytics:latest.integration'
+        
     compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     compile group: 'com.google.zxing', name: 'core', version: '3.2.1'
@@ -45,7 +48,7 @@ dependencies {
     compile(name: 'vuforia', ext: 'aar') //如果aar名字不同请修改
 }
 </code></pre>
-###3.	proguard-rules.pro配置混淆
+###3.proguard-rules.pro配置混淆
 如果未设置混淆，可以不用添加；
 <pre><code>
 -verbose
@@ -76,9 +79,9 @@ dependencies {
 }
 
 #native-font
-</code></pre>
 -keep class com.rtmap.game.text.** { *; }
-###4. AndroidManifest.xml配置
+</code></pre>
+###4.AndroidManifest.xml配置
 权限声明：
 
 
@@ -100,23 +103,32 @@ dependencies {
 < activity
     android:name="com.rtmap.gm.myvuforia.ImageTargets.ImageTargets"
     android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize"
-    android:launchMode="singleTask"
+    android:launchMode="singleTop"
     android:theme="@style/SampleAppsTheme">
 < /activity>
 </code></pre>
 
-###5.	SDK的aar库的存放位置
+###5.SDK的aar库的存放位置
 1.	项目的module的根目录下新建libs目录；
-2.	将两个aar库放入libs目录下；
+2.	将AR SDK文件下的aar目录下aar库放入libs目录下；
 3.	重新编译项目。
+###6.SDK的入口
+<pre><code>
+    Intent intent = new Intent(this, AndroidLauncher.class);
+    intent.putExtra("ar_phone", phone);//传入的手机号
+    startActivity(intent);
+</code></pre>
 ##环境配置
 ###SDK开发环境
-Android Studio 2.3.3;
-Gradle:2.3.3
-Android编译版本22
+Android Studio 版本 2.3.3;
+Gradle 版本 2.3.3
+Android 编译版本 22
 ###运行环境
-android最小运行版本 14
+android 最小运行版本 14
 ##更新SDK配置
 ###识别图片配置
-更换sdk，在src/main/assets目录下配置识别图片的xml和dat文件，文件名称指定，修改后替换即可。
- 
+在src/main/assets目录下配置AR SDK文件下的assets目录下识别图片的StonesAndChips.xml和StonesAndChips.dat文件，文件名称不可以改变，修改后替换即可。
+###游戏开始页规则配置
+替换AR SDK文件下的assets目录下m_rule.png文件，名字不可以改变
+###背包-卡券规则配置
+替换AR SDK文件下的assets目录下beed_rule.png文件，名字不可以改变

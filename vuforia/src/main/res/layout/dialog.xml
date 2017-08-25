@@ -16,8 +16,8 @@
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
         android:text="使用规则"
-        android:textSize="15sp"
         android:textColor="@android:color/black"
+        android:textSize="15sp"
         android:textStyle="bold"/>
 
     <TextView
@@ -26,9 +26,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="5dp"
-        android:textSize="14sp"
+        android:text="内容"
         android:textColor="@android:color/darker_gray"
-        android:text="内容"/>
+        android:textSize="14sp"/>
 
     <View
         android:layout_width="match_parent"

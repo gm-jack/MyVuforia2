@@ -12,6 +12,10 @@
         "source": "C:\\Users\\yxy\\.android\\build-cache\\37beba03dd00457766ee92b34a6d6daf8af7cb1c\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
     },
     {
+        "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\layout\\dialog.xml",
+        "source": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\vuforia\\build\\intermediates\\bundles\\default\\res\\layout\\dialog.xml"
+    },
+    {
         "merged": "C:\\Users\\yxy\\Desktop\\Project\\MyVuforia\\android\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_close_item_material.xml",
         "source": "C:\\Users\\yxy\\.android\\build-cache\\37beba03dd00457766ee92b34a6d6daf8af7cb1c\\output\\res\\layout\\abc_action_mode_close_item_material.xml"
     },

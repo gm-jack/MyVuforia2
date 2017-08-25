@@ -88,7 +88,6 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
 
     private RelativeLayout mUILayout;
 
-//    LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
 
     // Alert Dialog used to display SDK errors
     private AlertDialog mErrorDialog;
@@ -129,6 +128,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
     private boolean isRun = true;
     private boolean mPermission;
     private PackageManager mPm;
+    private boolean isCancle = false;
 
 
     // Called when the activity first starts or the user navigates back to an
@@ -196,16 +196,15 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
     }
 
     public String getApplicationName() {
-        ApplicationInfo applicationInfo = null;
+        String mApplicationName = "当前应用";
         try {
-
-            applicationInfo = mPm.getApplicationInfo(getPackageName(), 0);
+            ApplicationInfo applicationInfo = mPm.getApplicationInfo(getPackageName(), 0);
+            mApplicationName = (String) mPm.getApplicationLabel(applicationInfo);
         } catch (PackageManager.NameNotFoundException e) {
-            applicationInfo = null;
+            return mApplicationName;
         }
-        String applicationName =
-                (String) mPm.getApplicationLabel(applicationInfo);
-        return applicationName;
+
+        return mApplicationName;
     }
 
     // Process Single Tap event to trigger autofocus
@@ -258,7 +257,6 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
     // Called when the activity will start interacting with the user.
     @Override
     protected void onResume() {
-        Log.d(LOGTAG, "onResume");
         super.onResume();
         if (!mPermission) {
             return;
@@ -280,7 +278,8 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
             mGlView.setVisibility(View.VISIBLE);
             mGlView.onResume();
         }
-
+        if (svScan != null && isCancle)
+            svScan.setScanShow(true);
     }
 
 
@@ -297,9 +296,8 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
     // Called when the system is about to start resuming a previous activity.
     @Override
     protected void onPause() {
-        Log.d(LOGTAG, "onPause");
         super.onPause();
-
+        isCancle = true;
         if (mGlView != null) {
             mGlView.setVisibility(View.INVISIBLE);
             mGlView.onPause();
@@ -321,13 +319,15 @@ public class ImageTargets extends Activity implements SampleApplicationControl {
         } catch (SampleApplicationException e) {
             Log.e(LOGTAG, e.getString());
         }
+        if (svScan != null) {
+            svScan.stopAnim();
+        }
     }
 
 
     // The final call you receive before your activity is destroyed.
     @Override
     protected void onDestroy() {
-        Log.d(LOGTAG, "onDestroy");
         super.onDestroy();
 
         try {

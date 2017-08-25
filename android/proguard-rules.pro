@@ -35,6 +35,7 @@
 -keep class com.badlogic.gdx.controllers.android.AndroidControllers
 -keep class com.badlogic.gdx.backends.android.AndroidApplication
 -keep class com.rtmap.game.AndroidLauncher
+-keep class com.rtmap.game.view.**
 
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
    <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);

@@ -10,4 +10,8 @@
             <enum name="round_bottom" value="3" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="SmartImageView">
+        <attr name="ratio" format="float"/>
+    </declare-styleable>
 </resources>

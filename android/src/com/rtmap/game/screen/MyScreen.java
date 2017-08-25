@@ -459,6 +459,8 @@ public abstract class MyScreen implements Screen {
                         }
                         mTranX += (float) mChangeX;
                         mTranY += (float) mChangeY;
+
+                        //旧版移动代码
                         //                    if (isX) {
                         //                        offsetX = old.x;
                         //                    } else {

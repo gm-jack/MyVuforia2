@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -58,7 +57,6 @@ public class ScanView extends View implements ValueAnimator.AnimatorUpdateListen
     public ScanView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         contexts = new SoftReference<>(context);
-        Log.e("vuforia", "ScanView()");
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mMaskColor = Color.parseColor("#55000000");
@@ -94,23 +92,24 @@ public class ScanView extends View implements ValueAnimator.AnimatorUpdateListen
         int leftOffset = (getWidth() - mRectWidth) / 2;
         mFramingRect = new Rect(leftOffset, mTopOffset, leftOffset + mRectWidth, mTopOffset + mBarcodeRectHeight);
 
-        if (animatorLine != null) {
-            animatorLine.cancel();
-            animatorLine = null;
-        }
 
-        animatorLine = ValueAnimator.ofInt(
-                0, mBarcodeRectHeight)
-                .setDuration(2000);
-        animatorLine.setRepeatMode(ValueAnimator.RESTART);
-        animatorLine.setRepeatCount(ValueAnimator.INFINITE);
-        animatorLine.setInterpolator(mInterpolator);
-        animatorLine.addUpdateListener(this);
     }
 
     public void setScanShow(boolean scanShow) {
         this.scanShow = scanShow;
         if (scanShow) {
+            if (animatorLine != null) {
+                animatorLine.cancel();
+                animatorLine = null;
+            }
+
+            animatorLine = ValueAnimator.ofInt(
+                    0, mBarcodeRectHeight)
+                    .setDuration(2000);
+            animatorLine.setRepeatMode(ValueAnimator.RESTART);
+            animatorLine.setRepeatCount(ValueAnimator.INFINITE);
+            animatorLine.setInterpolator(mInterpolator);
+            animatorLine.addUpdateListener(this);
             startAnim();
             invalidate();
         }
@@ -203,8 +202,15 @@ public class ScanView extends View implements ValueAnimator.AnimatorUpdateListen
 
 
     private void startAnim() {
-        if (animatorLine != null && !animatorLine.isRunning()) {
+        if (animatorLine != null &&!animatorLine.isRunning()) {
             animatorLine.start();
+        }
+    }
+
+    public void stopAnim() {
+        if (animatorLine != null) {
+            animatorLine.removeUpdateListener(this);
+            animatorLine.cancel();
         }
     }
 
